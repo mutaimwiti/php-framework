@@ -1,0 +1,18 @@
+{
+    "name": "mutaimwiti/vanilla-php",
+    "description": "Vanilla PHP",
+    "type": "project",
+    "license": "MIT",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Core\\": "core/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
