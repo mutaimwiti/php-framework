@@ -49,7 +49,7 @@ class Request {
      * @return string
      */
     public function method() {
-        return $_REQUEST['REQUEST_METHOD'];
+        return $_SERVER['REQUEST_METHOD'];
     }
 
     /**

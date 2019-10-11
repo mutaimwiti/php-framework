@@ -19,7 +19,6 @@ class RequestTest extends TestCase
         $this->_GET = $_GET;
         $this->_POST = $_POST;
         $this->_SERVER = $_SERVER;
-        $this->_REQUEST = $_REQUEST;
     }
 
     protected function tearDown()
@@ -29,7 +28,6 @@ class RequestTest extends TestCase
         $_GET = $this->_GET;
         $_POST = $this->_POST;
         $_SERVER = $this->_SERVER;
-        $_REQUEST = $this->_REQUEST;
     }
 
     /** @test */
@@ -84,13 +82,13 @@ class RequestTest extends TestCase
     /** @test */
     function it_gets_correct_request_method()
     {
-        $_REQUEST['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
 
         $instance = new Request();
 
         $this->assertEquals('GET', ($instance->method()));
 
-        $_REQUEST['REQUEST_METHOD'] = 'POST';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $instance = new Request();
 
