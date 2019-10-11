@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Exception;
 use Core\Request;
 
 class RequestTest extends TestCase
@@ -70,13 +69,13 @@ class RequestTest extends TestCase
     }
 
     /** @test */
-    function it_throws_when_key_is_missing()
+    function it_returns_default_value_when_key_is_missing()
     {
-        $this->expectException(Exception::class);
-
         $instance = new Request();
 
-        $this->assertEquals('foo_val', ($instance->get('foo')));
+        $this->assertEquals(null, ($instance->get('foo')));
+
+        $this->assertEquals('bar', ($instance->get('foo', 'bar')));
     }
 
     /** @test */

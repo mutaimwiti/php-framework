@@ -2,8 +2,6 @@
 
 namespace Core;
 
-use Exception;
-
 class Request {
     protected $params = [
         'GET' => [],
@@ -32,17 +30,17 @@ class Request {
 
     /**
      * @param $key
+     * @param null $default
      * @return mixed
-     * @throws \Exception
      */
-    public function get($key) {
-        $value = ($this->all())[$key];
+    public function get($key, $default = null) {
+        $all = $this->all();
 
-        if ($value) {
-            return $value;
+        if (array_key_exists($key, $all)) {
+            return $all[$key];
         }
 
-        throw new Exception('Request parameter not found.');
+        return $default;
     }
 
     /**
