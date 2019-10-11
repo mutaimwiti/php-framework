@@ -2,9 +2,10 @@
 
 namespace Tests;
 
-use Exception;
-use Core\Router;
 use Core\Request;
+use Core\Router\Router;
+use Core\Router\HTTPMethodException;
+use Core\Router\RouteNotFoundException;
 
 class RouterTest extends TestCase
 {
@@ -102,7 +103,7 @@ class RouterTest extends TestCase
 
     /** @test */
     function it_throws_when_invalid_invalid_http_method_is_detected() {
-        $this->expectException(Exception::class);
+        $this->expectException(HTTPMethodException::class);
 
         $router = new Router();
 
@@ -114,7 +115,7 @@ class RouterTest extends TestCase
 
     /** @test */
     function it_throws_when_route_is_not_found() {
-        $this->expectException(Exception::class);
+        $this->expectException(RouteNotFoundException::class);
 
         $router = new Router();
 

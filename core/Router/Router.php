@@ -1,9 +1,9 @@
 <?php
 
-namespace Core;
+namespace Core\Router;
 
 use Closure;
-use Exception;
+use Core\Request;
 
 class Router
 {
@@ -42,7 +42,8 @@ class Router
     /**
      * @param Request $request
      * @return bool|string|Closure
-     * @throws Exception
+     * @throws RouteNotFoundException
+     * @throws HTTPMethodException
      */
     public function match(Request $request)
     {
@@ -54,12 +55,12 @@ class Router
             $action = $this->getRoutes($method)[$uri];
 
             if (!$action) {
-                throw new Exception("Route $method $uri does not exist");
+                throw new RouteNotFoundException("Route $method $uri does not exist");
             }
 
             return $action;
         }
 
-        throw new Exception("Method $method is not allowed");
+        throw new HTTPMethodException("Method $method is not allowed");
     }
 }
