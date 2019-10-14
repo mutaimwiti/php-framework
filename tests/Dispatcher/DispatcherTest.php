@@ -8,8 +8,8 @@ use Tests\TestCase;
 use Core\Controller;
 use Core\Router\Router;
 use Core\Dispatcher\Dispatcher;
-use Core\Router\RouteNotFoundException;
 use Core\Dispatcher\ControllerDispatcher;
+use Core\Router\Exceptions\RouteNotFoundException;
 
 class DispatcherTest extends TestCase
 {

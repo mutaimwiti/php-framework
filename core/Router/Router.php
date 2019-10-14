@@ -4,6 +4,8 @@ namespace Core\Router;
 
 use Closure;
 use Core\Request;
+use Core\Router\Exceptions\HTTPMethodException;
+use Core\Router\Exceptions\RouteNotFoundException;
 
 class Router
 {

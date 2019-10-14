@@ -4,8 +4,8 @@ namespace Tests;
 
 use Core\Request;
 use Core\Router\Router;
-use Core\Router\HTTPMethodException;
-use Core\Router\RouteNotFoundException;
+use Core\Router\Exceptions\HTTPMethodException;
+use Core\Router\Exceptions\RouteNotFoundException;
 
 class RouterTest extends TestCase
 {
