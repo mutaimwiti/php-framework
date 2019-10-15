@@ -2,21 +2,25 @@
 
 if (!function_exists('dump')) {
     /**
-     * @param $val
+     * @param array $values
      */
-    function dump($val)
+    function dump(...$values)
     {
-        var_dump($val);
+        foreach ($values as $value) {
+            print_r("$value\n");
+        }
     }
 }
 
 if (!function_exists('dd')) {
     /**
-     * @param $val
+     * @param array $values
      */
-    function dd($val)
+    function dd(...$values)
     {
-        var_dump($val);
+        foreach ($values as $value) {
+            print_r("$value\n");
+        }
 
         die();
     }
