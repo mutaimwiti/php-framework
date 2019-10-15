@@ -93,11 +93,11 @@ class DispatcherTest extends TestCase
 
         $router = new Router();
 
-        $router->get('foo', 'FooController@index');
+        $router->namespace('Tests\Dispatcher\Fixtures', function ($router) {
+            $router->get('foo', 'FooController@index');
+        });
 
         $dispatcher = new Dispatcher($router, $controllerDispatcherMock);
-
-        $dispatcher->setControllerNameSpace('Tests\Dispatcher\Fixtures');
 
         $dispatcher->handle($request);
     }

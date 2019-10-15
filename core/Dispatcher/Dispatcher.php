@@ -17,7 +17,6 @@ class Dispatcher
      * @var Router
      */
     protected $router;
-    protected $controllerNamespace = 'App\\Controllers';
     /**
      * @var ControllerDispatcher
      */
@@ -82,11 +81,6 @@ class Dispatcher
         return call_user_func($action, $request);
     }
 
-
-    public function setControllerNameSpace($namespace) {
-        $this->controllerNamespace = $namespace;
-    }
-
     /**
      * @param Request $request
      * @param string $controller
@@ -97,15 +91,13 @@ class Dispatcher
      */
     protected function dispatchControllerAction(Request $request, string $controller, string $method)
     {
-        $class = "$this->controllerNamespace\\$controller";
-
-        if (class_exists($class)) {
-            $controllerInstance = new $class;
+        if (class_exists($controller)) {
+            $controllerInstance = new $controller;
 
             return $this->controllerDispatcher->dispatch($request, $controllerInstance, $method);
         } else {
             throw new ControllerNotFoundException(
-                "Controller $class does not exist"
+                "Controller $controller does not exist"
             );
         }
     }

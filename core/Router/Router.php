@@ -9,6 +9,8 @@ use Core\Router\Exceptions\RouteNotFoundException;
 
 class Router
 {
+    protected $namespace = '';
+
     protected $routes = [
         'POST' => [],
         'GET' => [],
@@ -20,7 +22,7 @@ class Router
      */
     public function get($uri, $action)
     {
-        $this->routes['GET'][$uri] = $action;
+        $this->routes['GET'][$uri] = $this->applyNamespace($action);
     }
 
     /**
@@ -29,7 +31,33 @@ class Router
      */
     public function post($uri, $action)
     {
-        $this->routes['POST'][$uri] = $action;
+        $this->routes['POST'][$uri] = $this->applyNamespace($action);;
+    }
+
+    /**
+     * @param $name
+     * @param $callback
+     */
+    public function namespace($name, $callback)
+    {
+        $this->namespace = $name . '\\';
+
+        $callback($this);
+
+        $this->namespace = '';
+    }
+
+    /**
+     * @param $action
+     * @return mixed
+     */
+    protected function applyNamespace($action)
+    {
+        if (is_string($action)) {
+            $action = $this->namespace . stripslashes('\\') . $action;
+        }
+
+        return $action;
     }
 
     /**
