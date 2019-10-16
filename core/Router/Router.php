@@ -9,7 +9,7 @@ use Core\Router\Exceptions\RouteNotFoundException;
 
 class Router
 {
-    protected $group = '';
+    protected $prefix = '';
     protected $namespace = '';
 
     protected $routes = [
@@ -59,15 +59,15 @@ class Router
      * @param $name
      * @param $callback
      */
-    public function group($name, $callback)
+    public function prefix($name, $callback)
     {
-        $oldGroup = $this->group;
+        $oldPrefix = $this->prefix;
 
-        $this->group = ltrim($oldGroup . "/$name", '/');
+        $this->prefix = ltrim($oldPrefix . "/$name", '/');
 
         $callback($this);
 
-        $this->group = $oldGroup;
+        $this->prefix = $oldPrefix;
     }
 
     /**
@@ -78,7 +78,7 @@ class Router
     protected function applyWrappers($uri, $action)
     {
         return (Object)[
-            'uri' => $this->applyGroup($uri),
+            'uri' => $this->applyPrefix($uri),
             'action' => $this->applyNamespace($action),
         ];
     }
@@ -100,9 +100,9 @@ class Router
      * @param $uri
      * @return mixed
      */
-    protected function applyGroup($uri)
+    protected function applyPrefix($uri)
     {
-        return ltrim("$this->group/$uri", '/');
+        return ltrim("$this->prefix/$uri", '/');
     }
 
     /**

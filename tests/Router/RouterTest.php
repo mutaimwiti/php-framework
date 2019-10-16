@@ -172,7 +172,7 @@ class RouterTest extends TestCase
     }
 
     /** @test */
-    function it_should_apply_route_groups()
+    function it_should_apply_route_prefixes()
     {
         $router = new Router();
 
@@ -180,11 +180,11 @@ class RouterTest extends TestCase
             return 'Reports';
         };
 
-        $router->group('api', function ($router) {
+        $router->prefix('api', function ($router) {
             $router->get('users', 'UsersController@index');
         });
 
-        $router->group('admin', function ($router) use ($reportsCallback) {
+        $router->prefix('admin', function ($router) use ($reportsCallback) {
             $router->post('reports', $reportsCallback);
         });
 
@@ -197,7 +197,7 @@ class RouterTest extends TestCase
     }
 
     /** @test */
-    function it_should_only_apply_route_groups_to_wrapped_routes()
+    function it_should_only_apply_route_prefixes_to_wrapped_routes()
     {
         $router = new Router();
 
@@ -205,7 +205,7 @@ class RouterTest extends TestCase
             return 'Reports';
         };
 
-        $router->group('api', function ($router) {
+        $router->prefix('api', function ($router) {
             $router->get('users', 'UsersController@index');
         });
 
@@ -220,9 +220,9 @@ class RouterTest extends TestCase
     }
 
     /** @test */
-    function it_should_apply_both_namespace_and_route_group_nests()
+    function it_should_apply_both_namespace_and_route_prefix_nests()
     {
-        // get routes with complex nesting of namespaces and groups
+        // get routes with complex nesting of namespaces and prefixes
         $router = require 'fixtures/complex_routes.php';
 
         $expected = [
