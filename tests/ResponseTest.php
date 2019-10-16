@@ -15,12 +15,12 @@ class ResponseTest extends TestCase
             ->header('X-test-header1', 'test-header1')
             ->header('X-test-header2', 'test-header2');
 
-        $expected = [
+        $sent = [
             'X-test-header1' => 'test-header1',
             'X-test-header2' => 'test-header2'
         ];
 
-        $this->assertEquals($expected, $response->getHeaders());
+        $this->assertEquals($sent, array_intersect_assoc($response->getHeaders(), $sent));
     }
 
     /** @test */

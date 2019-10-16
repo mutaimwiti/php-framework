@@ -25,8 +25,9 @@ class Response
     {
         if (is_array($this->content)) {
             $this->header('Content-Type', self::APPLICATION_JSON);
+        } else {
+            $this->header('Content-Type', self::TEXT_HTML);
         }
-        // default is text/html
     }
 
     public function header($name, $value)
@@ -60,7 +61,11 @@ class Response
 
     protected function shouldBeJson()
     {
-        return $this->headers['Content-Type'] === self::APPLICATION_JSON;
+        if (isset($this->headers['Content-Type'])) {
+            return $this->headers['Content-Type'] === self::APPLICATION_JSON;
+        }
+
+        return false;
     }
 
     public function sendContent()
