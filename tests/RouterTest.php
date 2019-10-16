@@ -70,7 +70,8 @@ class RouterTest extends TestCase
     }
 
     /** @test */
-    function it_matches_controller_requests_correctly() {
+    function it_matches_controller_requests_correctly()
+    {
         $router = new Router();
 
         $actionString = 'UsersController@store';
@@ -85,7 +86,8 @@ class RouterTest extends TestCase
     }
 
     /** @test */
-    function it_matches_closure_requests_correctly() {
+    function it_matches_closure_requests_correctly()
+    {
         $router = new Router();
 
         $reportsClosure = function () {
@@ -102,7 +104,8 @@ class RouterTest extends TestCase
     }
 
     /** @test */
-    function it_throws_when_invalid_invalid_http_method_is_detected() {
+    function it_throws_when_invalid_invalid_http_method_is_detected()
+    {
         $this->expectException(HTTPMethodException::class);
 
         $router = new Router();
@@ -114,7 +117,8 @@ class RouterTest extends TestCase
     }
 
     /** @test */
-    function it_throws_when_route_is_not_found() {
+    function it_throws_when_route_is_not_found()
+    {
         $this->expectException(RouteNotFoundException::class);
 
         $router = new Router();
@@ -127,7 +131,8 @@ class RouterTest extends TestCase
     }
 
     /** @test */
-    function it_should_apply_controller_namespaces() {
+    function it_should_apply_controller_namespaces()
+    {
         $router = new Router();
 
         $router->namespace('App\Controllers', function ($router) {
@@ -148,7 +153,8 @@ class RouterTest extends TestCase
     }
 
     /** @test */
-    function it_should_only_apply_namespaces_to_wrapped_routes() {
+    function it_should_only_apply_namespaces_to_wrapped_routes()
+    {
         $router = new Router();
 
         $router->namespace('App\Controllers', function ($router) {
@@ -160,6 +166,77 @@ class RouterTest extends TestCase
         $expected = [
             'POST' => ['users' => 'App\Controllers\UsersController@store'],
             'GET' => ['articles' => 'ArticleController@index'],
+        ];
+
+        $this->assertEquals($expected, $router->getRoutes());
+    }
+
+    /** @test */
+    function it_should_apply_route_groups()
+    {
+        $router = new Router();
+
+        $reportsCallback = function () {
+            return 'Reports';
+        };
+
+        $router->group('api', function ($router) {
+            $router->get('users', 'UsersController@index');
+        });
+
+        $router->group('admin', function ($router) use ($reportsCallback) {
+            $router->post('reports', $reportsCallback);
+        });
+
+        $expected = [
+            'GET' => ['api/users' => 'UsersController@index'],
+            'POST' => ['admin/reports' => $reportsCallback],
+        ];
+
+        $this->assertEquals($expected, $router->getRoutes());
+    }
+
+    /** @test */
+    function it_should_only_apply_route_groups_to_wrapped_routes()
+    {
+        $router = new Router();
+
+        $reportsCallback = function () {
+            return 'Reports';
+        };
+
+        $router->group('api', function ($router) {
+            $router->get('users', 'UsersController@index');
+        });
+
+        $router->post('reports', $reportsCallback);
+
+        $expected = [
+            'GET' => ['api/users' => 'UsersController@index'],
+            'POST' => ['reports' => $reportsCallback],
+        ];
+
+        $this->assertEquals($expected, $router->getRoutes());
+    }
+
+    /** @test */
+    function it_should_apply_namespace_and_route_group_nests()
+    {
+        $router = new Router();
+
+        $router->namespace('Controllers\Api', function ($router) {
+            $router->group('api', function ($router) {
+                $router->group('v1', function ($router) {
+                    $router->post('users', 'UsersController@store');
+                });
+
+                $router->get('info', 'MasterController@info');
+            });
+        });
+
+        $expected = [
+            'POST' => ['api/v1/users' => 'Controllers\Api\UsersController@store'],
+            'GET' => ['api/info' => 'Controllers\Api\MasterController@info'],
         ];
 
         $this->assertEquals($expected, $router->getRoutes());

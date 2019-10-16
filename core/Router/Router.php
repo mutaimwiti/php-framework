@@ -9,6 +9,7 @@ use Core\Router\Exceptions\RouteNotFoundException;
 
 class Router
 {
+    protected $group = '';
     protected $namespace = '';
 
     protected $routes = [
@@ -22,7 +23,9 @@ class Router
      */
     public function get($uri, $action)
     {
-        $this->routes['GET'][$uri] = $this->applyNamespace($action);
+        $route = $this->applyWrappers($uri, $action);
+
+        $this->routes['GET'][$route->uri] = $route->action;
     }
 
     /**
@@ -31,7 +34,9 @@ class Router
      */
     public function post($uri, $action)
     {
-        $this->routes['POST'][$uri] = $this->applyNamespace($action);;
+        $route = $this->applyWrappers($uri, $action);
+
+        $this->routes['POST'][$route->uri] = $route->action;
     }
 
     /**
@@ -47,6 +52,35 @@ class Router
         $this->namespace = '';
     }
 
+
+    /**
+     * @param $name
+     * @param $callback
+     */
+    public function group($name, $callback)
+    {
+        $oldGroup = $this->group;
+
+        $this->group = ltrim($oldGroup . "/$name", '/');
+
+        $callback($this);
+
+        $this->group = $oldGroup;
+    }
+
+    /**
+     * @param $uri
+     * @param $action
+     * @return mixed
+     */
+    protected function applyWrappers($uri, $action)
+    {
+        return (Object)[
+            'uri' => $this->applyGroup($uri),
+            'action' => $this->applyNamespace($action),
+        ];
+    }
+
     /**
      * @param $action
      * @return mixed
@@ -58,6 +92,15 @@ class Router
         }
 
         return $action;
+    }
+
+    /**
+     * @param $uri
+     * @return mixed
+     */
+    protected function applyGroup($uri)
+    {
+        return ltrim("$this->group/$uri", '/');
     }
 
     /**
