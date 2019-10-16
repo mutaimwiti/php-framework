@@ -103,4 +103,14 @@ class RequestTest extends TestCase
 
         $this->assertEquals('foo/bar', ($instance->uri()));
     }
+
+    /** @test */
+    function it_gets_the_correct_uri_for_root_routes()
+    {
+        $_SERVER['REQUEST_URI'] = '/';
+
+        $instance = new Request();
+
+        $this->assertEquals('/', ($instance->uri()));
+    }
 }

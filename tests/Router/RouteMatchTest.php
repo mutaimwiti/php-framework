@@ -44,6 +44,29 @@ class RouteMatchTest extends TestCase {
     }
 
     /** @test */
+    function it_matches_root_route_requests_correctly()
+    {
+        $router = new Router();
+
+        $router->get('/', 'HomeController@index');
+        $router->post('/', 'HomeController@store');
+
+        // simulate root request
+        $_SERVER['REQUEST_URI'] = '/';
+
+        // simulate GET request
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $getRequest = new Request();
+
+        // simulate POST request
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $postRequest = new Request();
+
+        $this->assertEquals('HomeController@index', $router->match($getRequest));
+        $this->assertEquals('HomeController@store', $router->match($postRequest));
+    }
+
+    /** @test */
     function it_throws_when_invalid_invalid_http_method_is_detected()
     {
         $this->expectException(HTTPMethodException::class);

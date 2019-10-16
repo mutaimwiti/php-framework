@@ -51,6 +51,22 @@ class RouteRegisterTest extends TestCase
     }
 
     /** @test */
+    function it_correctly_registers_root_routes()
+    {
+        $router = new Router();
+
+        $router->get('/', 'HomeController@index');
+        $router->post('/', 'HomeController@store');
+
+        $expected = [
+            'GET' => ['/' => 'HomeController@index'],
+            'POST' => ['/' => 'HomeController@store'],
+        ];
+
+        $this->assertEquals($expected, $router->getRoutes());
+    }
+
+    /** @test */
     function it_returns_all_routes()
     {
         $router = new Router();

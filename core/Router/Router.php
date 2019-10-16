@@ -137,7 +137,9 @@ class Router
      */
     protected function applyPrefix($uri)
     {
-        return ltrim("$this->prefix/$uri", '/');
+        $uri = ltrim("$this->prefix/$uri", '/');
+
+        return $uri === '' ? '/' : trim($uri, '/');
     }
 
     /**

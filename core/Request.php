@@ -2,7 +2,12 @@
 
 namespace Core;
 
-class Request {
+class Request
+{
+    protected $GET;
+    protected $POST;
+    protected $SERVER;
+
     protected $params = [
         'GET' => [],
         'POST' => []
@@ -10,21 +15,30 @@ class Request {
 
     public function __construct()
     {
-        foreach ($_GET as $key => $value) {
+        $this->GET = $_GET;
+        $this->POST = $_POST;
+        $this->SERVER = $_SERVER;
+
+        $this->loadParams();
+
+        return $this;
+    }
+
+    protected function loadParams() {
+        foreach ($this->GET as $key => $value) {
             $this->params['GET'][$key] = $value;
         }
 
-        foreach ($_POST as $key => $value) {
+        foreach ($this->POST as $key => $value) {
             $this->params['POST'][$key] = $value;
         }
-
-        return $this;
     }
 
     /**
      * @return array
      */
-    public function all() {
+    public function all()
+    {
         return array_merge($this->params['GET'], $this->params['POST']);
     }
 
@@ -33,7 +47,8 @@ class Request {
      * @param null $default
      * @return mixed
      */
-    public function get($key, $default = null) {
+    public function get($key, $default = null)
+    {
         $all = $this->all();
 
         if (array_key_exists($key, $all)) {
@@ -46,16 +61,20 @@ class Request {
     /**
      * @return string
      */
-    public function method() {
-        return $_SERVER['REQUEST_METHOD'];
+    public function method()
+    {
+        return $this->SERVER['REQUEST_METHOD'];
     }
 
     /**
      * @return string
      */
-    public function uri() {
-        return trim(
-            parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),
+    public function uri()
+    {
+        $uri = $this->SERVER['REQUEST_URI'];
+
+        return $uri === '/' ? $uri : trim(
+            parse_url($this->SERVER['REQUEST_URI'], PHP_URL_PATH),
             '/'
         );
     }
