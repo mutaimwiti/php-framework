@@ -39,6 +39,16 @@ class Router
         $this->routes['POST'][$route->uri] = $route->action;
     }
 
+    protected function extendNamespace($name)
+    {
+        $this->namespace = ltrim("$this->namespace\\$name", '\\');
+    }
+
+    protected function extendPrefix($prefix)
+    {
+        $this->prefix = ltrim($this->prefix . "/$prefix", '/');
+    }
+
     /**
      * @param $name
      * @param $callback
@@ -47,7 +57,7 @@ class Router
     {
         $oldNamespace = $this->namespace;
 
-        $this->namespace = ltrim("$oldNamespace\\$name", '\\');
+        $this->extendNamespace($name);
 
         $callback($this);
 
@@ -56,18 +66,43 @@ class Router
 
 
     /**
-     * @param $name
+     * @param $prefix
      * @param $callback
      */
-    public function prefix($name, $callback)
+    public function prefix($prefix, $callback)
     {
         $oldPrefix = $this->prefix;
 
-        $this->prefix = ltrim($oldPrefix . "/$name", '/');
+        $this->extendPrefix($prefix);
 
         $callback($this);
 
         $this->prefix = $oldPrefix;
+    }
+
+    /**
+     * @param array $options
+     * @param $callback
+     */
+    public function group($options, $callback)
+    {
+        $oldPrefix = $this->prefix;
+        $oldNamespace = $this->namespace;
+
+        foreach ($options as $option => $value) {
+            switch ($option) {
+                case 'prefix':
+                    $this->extendPrefix($value);
+                    break;
+                case 'namespace':
+                    $this->extendNamespace($value);
+            }
+        }
+
+        $callback($this);
+
+        $this->prefix = $oldPrefix;
+        $this->namespace = $oldNamespace;
     }
 
     /**
