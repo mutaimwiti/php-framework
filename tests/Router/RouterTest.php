@@ -220,23 +220,19 @@ class RouterTest extends TestCase
     }
 
     /** @test */
-    function it_should_apply_namespace_and_route_group_nests()
+    function it_should_apply_both_namespace_and_route_group_nests()
     {
-        $router = new Router();
-
-        $router->namespace('Controllers\Api', function ($router) {
-            $router->group('api', function ($router) {
-                $router->group('v1', function ($router) {
-                    $router->post('users', 'UsersController@store');
-                });
-
-                $router->get('info', 'MasterController@info');
-            });
-        });
+        // get routes with complex nesting of namespaces and groups
+        $router = require 'fixtures/complex_routes.php';
 
         $expected = [
-            'POST' => ['api/v1/users' => 'Controllers\Api\UsersController@store'],
-            'GET' => ['api/info' => 'Controllers\Api\MasterController@info'],
+            'POST' => [
+                'api/v1/users' => 'Controllers\API\V1\UsersController@store'
+            ],
+            'GET' => [
+                'api/v2/reports' => 'Controllers\API\V2\ReportsController@index',
+                'api/info' => 'Controllers\API\MasterController@info',
+            ],
         ];
 
         $this->assertEquals($expected, $router->getRoutes());

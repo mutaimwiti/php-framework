@@ -45,11 +45,13 @@ class Router
      */
     public function namespace($name, $callback)
     {
-        $this->namespace = $name . '\\';
+        $oldNamespace = $this->namespace;
+
+        $this->namespace = ltrim("$oldNamespace\\$name", '\\');
 
         $callback($this);
 
-        $this->namespace = '';
+        $this->namespace = $oldNamespace;
     }
 
 
@@ -88,7 +90,7 @@ class Router
     protected function applyNamespace($action)
     {
         if (is_string($action)) {
-            $action = $this->namespace . stripslashes('\\') . $action;
+            $action = ltrim($this->namespace . "\\$action", "\\");
         }
 
         return $action;
