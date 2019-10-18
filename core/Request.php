@@ -8,10 +8,8 @@ class Request
     protected $post;
     protected $server;
 
-    protected $params = [
-        'GET' => [],
-        'POST' => []
-    ];
+    protected $data = [];
+    protected $query = [];
 
     /**
      * Request constructor.
@@ -38,11 +36,11 @@ class Request
     protected function loadParams()
     {
         foreach ($this->get as $key => $value) {
-            $this->params['GET'][$key] = $value;
+            $this->query[$key] = $value;
         }
 
         foreach ($this->post as $key => $value) {
-            $this->params['POST'][$key] = $value;
+            $this->data[$key] = $value;
         }
     }
 
@@ -96,7 +94,7 @@ class Request
      */
     public function all()
     {
-        return array_merge($this->params['GET'], $this->params['POST']);
+        return array_merge($this->query, $this->data);
     }
 
     /**
