@@ -18,10 +18,11 @@ class Response
     protected $content;
     protected $headers = [];
 
-    public function __construct($content, int $status = 200)
+    public function __construct($content, int $status = 200, $headers = [])
     {
         $this->status = $status;
         $this->content = $content;
+        $this->headers = $headers;
 
         $this->setContentTypeHeader();
 

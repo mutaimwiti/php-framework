@@ -8,6 +8,20 @@ use Core\Response;
 class ResponseTest extends TestCase
 {
     /** @test */
+    public function it_allows_constructor_initialization_of_content_status_and_headers()
+    {
+        $status = 405;
+        $content = "Hello World";
+        $headers = ['X-test-1' => 'V1', 'X-test-2' => 'V2',];
+
+        $response = new Response($content, $status, $headers);
+
+        $this->assertEquals($status, $response->status);
+        $this->assertEquals($content, $response->content);
+        $this->assertEquals($headers, array_intersect_assoc($response->headers, $headers));
+    }
+
+    /** @test */
     public function it_allows_setting_of_headers()
     {
         $response = new Response('Bad request', 400);
@@ -21,26 +35,6 @@ class ResponseTest extends TestCase
         ];
 
         $this->assertEquals($sent, array_intersect_assoc($response->headers, $sent));
-    }
-
-    /** @test */
-    public function it_allows_getting_of_content()
-    {
-        $content = "Hello World";
-
-        $response = new Response($content);
-
-        $this->assertEquals($content, $response->content);
-    }
-
-    /** @test */
-    public function it_allows_getting_of_status()
-    {
-        $status = 405;
-
-        $response = new Response([], $status);
-
-        $this->assertEquals($status, $response->status);
     }
 
     /** @test */
@@ -63,6 +57,18 @@ class ResponseTest extends TestCase
         $response = new Response($data);
 
         $this->assertEquals(Response::APPLICATION_JSON, $response->headers['Content-Type']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_automatically_sets_text_html_header_for_non_array_content()
+    {
+        $data = 'Hello World';
+
+        $response = new Response($data);
+
+        $this->assertEquals(Response::TEXT_HTML, $response->headers['Content-Type']);
     }
 
     /**
