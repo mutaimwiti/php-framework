@@ -13,29 +13,6 @@ use Core\Router\Exceptions\RouteNotFoundException;
 
 class DispatcherTest extends TestCase
 {
-
-    protected $_GET;
-    protected $_POST;
-    protected $_SERVER;
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->_GET = $_GET;
-        $this->_POST = $_POST;
-        $this->_SERVER = $_SERVER;
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $_GET = $this->_GET;
-        $_POST = $this->_POST;
-        $_SERVER = $this->_SERVER;
-    }
-
     /** @test */
     function it_rethrows_exceptions_from_router()
     {
@@ -47,10 +24,9 @@ class DispatcherTest extends TestCase
         $dispatcher = new Dispatcher(new Router(), new ControllerDispatcher());
 
         // simulate missing route request
-        $_SERVER['REQUEST_URI'] = 'foo';
-        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $request = Request::create('foo', 'GET');
 
-        $dispatcher->handle(new Request());
+        $dispatcher->handle($request);
     }
 
     /** @test */
@@ -67,11 +43,9 @@ class DispatcherTest extends TestCase
         $dispatcher = new Dispatcher($router, new ControllerDispatcher());
 
         // simulate request
-        $_SERVER['REQUEST_URI'] = 'foo';
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_GET = ['status' => 'cool'];
+        $request = Request::create('foo', 'GET', ['status' => 'cool']);
 
-        $result = $dispatcher->handle(new Request());
+        $result = $dispatcher->handle($request);
 
         $this->assertEquals('cool foo', $result);
     }
@@ -80,10 +54,7 @@ class DispatcherTest extends TestCase
     function it_dispatches_controller_handlers_correctly()
     {
         // simulate request
-        $_SERVER['REQUEST_URI'] = 'foo';
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-
-        $request = new Request();
+        $request = Request::create('foo', 'GET');
 
         $controllerDispatcherMock = Mockery::mock(ControllerDispatcher::class);
 

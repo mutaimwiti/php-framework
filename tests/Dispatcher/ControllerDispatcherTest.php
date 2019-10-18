@@ -4,9 +4,9 @@ namespace Tests\Dispatcher;
 
 use Mockery;
 use Core\Request;
-use Tests\Dispatcher\Fixtures\FooController;
 use Tests\TestCase;
 use Core\Dispatcher\ControllerDispatcher;
+use Tests\Dispatcher\Fixtures\FooController;
 use Core\Dispatcher\Exceptions\ControllerActionNotFoundException;
 
 class ControllerDispatcherTest extends TestCase
@@ -26,7 +26,7 @@ class ControllerDispatcherTest extends TestCase
     /** @test */
     public function it_triggers_the_call_action_controller_method()
     {
-        $request = new Request();
+        $request = Request::create();
 
         $controllerMock = Mockery::mock(FooController::class);
 
@@ -42,7 +42,7 @@ class ControllerDispatcherTest extends TestCase
     {
         $this->expectException(ControllerActionNotFoundException::class);
 
-        $request = new Request();
+        $request = Request::create();
 
         $this->dispatcher->dispatch($request, $this->fooController, 'store');
     }
@@ -50,7 +50,7 @@ class ControllerDispatcherTest extends TestCase
     /** @test */
     public function it_returns_the_response_from_controller()
     {
-        $request = new Request();
+        $request = Request::create();
 
         $response = $this->dispatcher->dispatch($request, $this->fooController, 'index');
 

@@ -4,34 +4,91 @@ namespace Core;
 
 class Request
 {
-    protected $GET;
-    protected $POST;
-    protected $SERVER;
+    protected $get;
+    protected $post;
+    protected $server;
 
     protected $params = [
         'GET' => [],
         'POST' => []
     ];
 
-    public function __construct()
+    /**
+     * Request constructor.
+     * Requires PHP super globals.
+     *
+     * @param $get
+     * @param $post
+     * @param $server
+     */
+    public function __construct($get, $post, $server)
     {
-        $this->GET = $_GET;
-        $this->POST = $_POST;
-        $this->SERVER = $_SERVER;
+        $this->get = $get;
+        $this->post = $post;
+        $this->server = $server;
 
         $this->loadParams();
 
         return $this;
     }
 
-    protected function loadParams() {
-        foreach ($this->GET as $key => $value) {
+    /**
+     * Load parameters instance super globals GET and POST.
+     */
+    protected function loadParams()
+    {
+        foreach ($this->get as $key => $value) {
             $this->params['GET'][$key] = $value;
         }
 
-        foreach ($this->POST as $key => $value) {
+        foreach ($this->post as $key => $value) {
             $this->params['POST'][$key] = $value;
         }
+    }
+
+    /**
+     * Create a request instance automatically from PHP super globals.
+     *
+     * @return Request
+     */
+    public static function capture()
+    {
+        return new static(
+            $_GET,
+            $_POST,
+            $_SERVER
+        );
+    }
+
+    /**
+     * Simulate a request - for the purpose of testing.
+     *
+     * @param string $uri
+     * @param string $method
+     * @param array $parameters
+     * @return Request
+     */
+    public static function create(string $uri = '/', string $method = 'GET', array $parameters = [])
+    {
+        $server['REQUEST_URI'] = $uri;
+        $server['REQUEST_METHOD'] = $method;
+        $get = [];
+        $post = [];
+
+        switch ($method) {
+            case 'GET':
+                $get = $parameters;
+                break;
+            case 'POST':
+                $post = $parameters;
+                break;
+        }
+
+        return new static(
+            $get,
+            $post,
+            $server
+        );
     }
 
     /**
@@ -63,7 +120,7 @@ class Request
      */
     public function method()
     {
-        return $this->SERVER['REQUEST_METHOD'];
+        return $this->server['REQUEST_METHOD'];
     }
 
     /**
@@ -71,10 +128,10 @@ class Request
      */
     public function uri()
     {
-        $uri = $this->SERVER['REQUEST_URI'];
+        $uri = $this->server['REQUEST_URI'];
 
         return $uri === '/' ? $uri : trim(
-            parse_url($this->SERVER['REQUEST_URI'], PHP_URL_PATH),
+            parse_url($this->server['REQUEST_URI'], PHP_URL_PATH),
             '/'
         );
     }

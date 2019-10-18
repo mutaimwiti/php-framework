@@ -19,10 +19,9 @@ class RouteMatchTest extends TestCase {
         $router->get('users', $actionString);
 
         // simulate request
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = 'users';
+        $request = Request::create('users', 'GET');
 
-        $this->assertEquals($actionString, $router->match(new Request()));
+        $this->assertEquals($actionString, $router->match($request));
     }
 
     /** @test */
@@ -37,10 +36,8 @@ class RouteMatchTest extends TestCase {
         $router->post('reports', $reportsClosure);
 
         // simulate request
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_SERVER['REQUEST_URI'] = 'reports';
-
-        $this->assertEquals($reportsClosure, $router->match(new Request()));
+        $request = Request::create('reports', 'POST');
+        $this->assertEquals($reportsClosure, $router->match($request));
     }
 
     /** @test */
@@ -51,16 +48,11 @@ class RouteMatchTest extends TestCase {
         $router->get('/', 'HomeController@index');
         $router->post('/', 'HomeController@store');
 
-        // simulate root request
-        $_SERVER['REQUEST_URI'] = '/';
-
         // simulate GET request
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $getRequest = new Request();
+        $getRequest = Request::create('/', 'GET');
 
         // simulate POST request
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $postRequest = new Request();
+        $postRequest = Request::create('/', 'POST');
 
         $this->assertEquals('HomeController@index', $router->match($getRequest));
         $this->assertEquals('HomeController@store', $router->match($postRequest));
@@ -73,10 +65,10 @@ class RouteMatchTest extends TestCase {
 
         $router = new Router();
 
-        // simulate request
-        $_SERVER['REQUEST_METHOD'] = 'HEAD';
+        // simulate HEAD request
+        $request = Request::create('/', 'HEAD');
 
-        $router->match(new Request());
+        $router->match($request);
     }
 
     /** @test */
@@ -87,9 +79,8 @@ class RouteMatchTest extends TestCase {
         $router = new Router();
 
         // simulate request
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_SERVER['REQUEST_URI'] = 'foo';
+        $request = Request::create('foo', 'POST');
 
-        $router->match(new Request());
+        $router->match($request);
     }
 }
