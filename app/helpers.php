@@ -1,27 +1,20 @@
 <?php
 
 if (!function_exists('dump')) {
-    /**
-     * @param array $values
-     */
-    function dump(...$values)
+    function dump()
     {
-        foreach ($values as $value) {
-            print_r("$value\n");
-        }
+        array_map(function ($value) {
+            echo '<pre>';
+            print_r($value);
+            echo '</pre>';
+        }, func_get_args());
     }
 }
 
 if (!function_exists('dd')) {
-    /**
-     * @param array $values
-     */
-    function dd(...$values)
+    function dd()
     {
-        foreach ($values as $value) {
-            print_r("$value\n");
-        }
-
+        dump(func_get_args());
         die();
     }
 }
