@@ -20,7 +20,7 @@ class ResponseTest extends TestCase
             'X-test-header2' => 'test-header2'
         ];
 
-        $this->assertEquals($sent, array_intersect_assoc($response->getHeaders(), $sent));
+        $this->assertEquals($sent, array_intersect_assoc($response->headers, $sent));
     }
 
     /** @test */
@@ -30,7 +30,7 @@ class ResponseTest extends TestCase
 
         $response = new Response($content);
 
-        $this->assertEquals($content, $response->getContent());
+        $this->assertEquals($content, $response->content);
     }
 
     /** @test */
@@ -40,7 +40,7 @@ class ResponseTest extends TestCase
 
         $response = new Response([], $status);
 
-        $this->assertEquals($status, $response->getStatus());
+        $this->assertEquals($status, $response->status);
     }
 
     /** @test */
@@ -62,7 +62,7 @@ class ResponseTest extends TestCase
 
         $response = new Response($data);
 
-        $this->assertEquals(Response::APPLICATION_JSON, $response->getHeaders()['Content-Type']);
+        $this->assertEquals(Response::APPLICATION_JSON, $response->headers['Content-Type']);
     }
 
     /**

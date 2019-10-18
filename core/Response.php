@@ -2,6 +2,13 @@
 
 namespace Core;
 
+/**
+ * Class Response
+ * @package Core
+ * @property-read int status
+ * @property-read mixed content
+ * @property-read array headers
+ */
 class Response
 {
     CONST TEXT_HTML = 'text/html';
@@ -37,19 +44,17 @@ class Response
         return $this;
     }
 
-    public function getContent()
+    /**
+     * @param $property
+     * @return mixed
+     */
+    public function __get($property)
     {
-        return $this->content;
-    }
+        if (property_exists($this, $property)) {
+            return $this->$property;
+        }
 
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    public function getHeaders()
-    {
-        return $this->headers;
+        return null;
     }
 
     public function sendHeaders()
