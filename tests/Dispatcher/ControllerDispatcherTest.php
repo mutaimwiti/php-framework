@@ -11,30 +11,29 @@ use Core\Dispatcher\Exceptions\ControllerActionNotFoundException;
 
 class ControllerDispatcherTest extends TestCase
 {
-
     protected $dispatcher;
+    protected $requestMock;
     protected $fooController;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->dispatcher = new ControllerDispatcher();
         $this->fooController = new FooController();
+        $this->dispatcher = new ControllerDispatcher();
+        $this->requestMock = Mockery::mock(Request::class);
     }
 
     /** @test */
     public function it_triggers_the_call_action_controller_method()
     {
-        $request = Request::create();
-
         $controllerMock = Mockery::mock(FooController::class);
 
         $controllerMock->shouldReceive('callAction')
-            ->with('index', $request)
+            ->with('index', $this->requestMock)
             ->once();
 
-        $this->dispatcher->dispatch($request, $controllerMock, 'index');
+        $this->dispatcher->dispatch($this->requestMock, $controllerMock, 'index');
     }
 
     /** @test */
@@ -42,18 +41,14 @@ class ControllerDispatcherTest extends TestCase
     {
         $this->expectException(ControllerActionNotFoundException::class);
 
-        $request = Request::create();
-
-        $this->dispatcher->dispatch($request, $this->fooController, 'store');
+        $this->dispatcher->dispatch($this->requestMock, $this->fooController, 'store');
     }
 
     /** @test */
     public function it_returns_the_response_from_controller()
     {
-        $request = Request::create();
+        $response = $this->dispatcher->dispatch($this->requestMock, $this->fooController, 'index');
 
-        $response = $this->dispatcher->dispatch($request, $this->fooController, 'index');
-
-        $this->assertEquals($request, $response);
+        $this->assertEquals($this->requestMock, $response);
     }
 }
