@@ -41,7 +41,7 @@ class Dispatcher
 
             if ($action instanceof Closure) {
                 $response = $this->dispatchClosureAction($request, $action);
-            } else if (gettype($action) === 'string') {
+            } else if (is_string($action)) {
                 $response = $this->dispatchControllerAction($request, $action);
             } else {
                 throw new InvalidRouteActionException("Invalid route action $action");
