@@ -42,9 +42,7 @@ class Dispatcher
             if ($action instanceof Closure) {
                 $response = $this->dispatchClosureAction($request, $action);
             } else if (gettype($action) === 'string') {
-                $controllerAction = $this->parseControllerAction($action);
-
-                $response = $this->dispatchControllerAction($request, ...$controllerAction);
+                $response = $this->dispatchControllerAction($request, $action);
             } else {
                 throw new InvalidRouteActionException("Invalid route action $action");
             }
@@ -52,6 +50,39 @@ class Dispatcher
             return $response instanceof Response ? $response : response($response);
         } catch (Exception $exception) {
             throw $exception;
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param Closure $action
+     * @return mixed
+     */
+    protected function dispatchClosureAction(Request $request, Closure $action)
+    {
+        return call_user_func($action, $request);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $action
+     * @return mixed
+     * @throws ControllerActionNotFoundException
+     * @throws ControllerNotFoundException
+     * @throws InvalidRouteActionException
+     */
+    protected function dispatchControllerAction(Request $request, string $action)
+    {
+        [$controller, $method] = $this->parseControllerAction($action);
+
+        if (class_exists($controller)) {
+            $controllerInstance = new $controller;
+
+            return $this->controllerDispatcher->dispatch($request, $controllerInstance, $method);
+        } else {
+            throw new ControllerNotFoundException(
+                "Controller $controller does not exist"
+            );
         }
     }
 
@@ -71,36 +102,5 @@ class Dispatcher
         }
 
         return $actionParts;
-    }
-
-    /**
-     * @param Request $request
-     * @param Closure $action
-     * @return mixed
-     */
-    protected function dispatchClosureAction(Request $request, Closure $action)
-    {
-        return call_user_func($action, $request);
-    }
-
-    /**
-     * @param Request $request
-     * @param string $controller
-     * @param string $method
-     * @return mixed
-     * @throws ControllerNotFoundException
-     * @throws ControllerActionNotFoundException
-     */
-    protected function dispatchControllerAction(Request $request, string $controller, string $method)
-    {
-        if (class_exists($controller)) {
-            $controllerInstance = new $controller;
-
-            return $this->controllerDispatcher->dispatch($request, $controllerInstance, $method);
-        } else {
-            throw new ControllerNotFoundException(
-                "Controller $controller does not exist"
-            );
-        }
     }
 }
