@@ -4,6 +4,7 @@ namespace Tests\Dispatcher;
 
 use Mockery;
 use Core\Request;
+use Core\Response;
 use Tests\TestCase;
 use Core\Controller;
 use Core\Router\Router;
@@ -38,7 +39,7 @@ class DispatcherTest extends TestCase
         $closure = function ($request) {
             $status = $request->get('status');
 
-            return "$status foo";
+            return response("$status foo");
         };
 
         $routerMock = Mockery::mock(Router::class);
@@ -52,9 +53,9 @@ class DispatcherTest extends TestCase
 
         $dispatcher = new Dispatcher($routerMock, $controllerDispatcherMock);
 
-        $result = $dispatcher->handle($request);
+        $response = $dispatcher->handle($request);
 
-        $this->assertEquals('cool foo', $result);
+        $this->assertEquals('cool foo', $response->content);
     }
 
     /** @test */
@@ -76,5 +77,50 @@ class DispatcherTest extends TestCase
         $dispatcher = new Dispatcher($routerMock, $controllerDispatcherMock);
 
         $dispatcher->handle($request);
+    }
+
+    /** @test */
+    function it_automatically_casts_closure_response_to_response_instance()
+    {
+        $routerMock = Mockery::mock(Router::class);
+
+        $routerMock->shouldReceive('match')
+            ->andReturn(function () {
+                return [];
+            });
+
+        $request = Request::create('foo');
+
+        $controllerDispatcherMock = Mockery::mock(ControllerDispatcher::class);
+
+        $dispatcher = new Dispatcher($routerMock, $controllerDispatcherMock);
+
+        $response = $dispatcher->handle($request);
+
+        $this->assertEquals([], $response->content);
+        $this->assertInstanceOf(Response::class, $response);
+    }
+
+    /** @test */
+    function it_automatically_casts_controller_response_to_response_instance()
+    {
+        $routerMock = Mockery::mock(Router::class);
+
+        $routerMock->shouldReceive('match')
+            ->andReturn('Tests\Dispatcher\Fixtures\BarController@get');
+
+        $request = Request::create('bar');
+
+        $controllerDispatcherMock = Mockery::mock(ControllerDispatcher::class);
+
+        $controllerDispatcherMock->shouldReceive('dispatch')
+            ->andReturn([]);
+
+        $dispatcher = new Dispatcher($routerMock, $controllerDispatcherMock);
+
+        $response = $dispatcher->handle($request);
+
+        $this->assertEquals([], $response->content);
+        $this->assertInstanceOf(Response::class, $response);
     }
 }

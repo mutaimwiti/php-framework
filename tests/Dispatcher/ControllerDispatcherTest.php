@@ -47,8 +47,13 @@ class ControllerDispatcherTest extends TestCase
     /** @test */
     public function it_returns_the_response_from_controller()
     {
+        $data = ['status' => 'success', 'foo' => 'bar'];
+
+        $this->requestMock->shouldReceive('all')
+            ->andReturn($data);
+
         $response = $this->dispatcher->dispatch($this->requestMock, $this->fooController, 'index');
 
-        $this->assertEquals($this->requestMock, $response);
+        $this->assertEquals($data, $response->content);
     }
 }

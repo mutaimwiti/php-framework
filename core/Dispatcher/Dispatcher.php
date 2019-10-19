@@ -5,6 +5,7 @@ namespace Core\Dispatcher;
 use Closure;
 use Exception;
 use Core\Request;
+use Core\Response;
 use Core\Router\Router;
 use Core\Dispatcher\Exceptions\InvalidRouteActionException;
 use Core\Dispatcher\Exceptions\ControllerNotFoundException;
@@ -39,19 +40,20 @@ class Dispatcher
             $action = $this->router->match($request);
 
             if ($action instanceof Closure) {
-                return $this->dispatchClosureAction($request, $action);
+                $response = $this->dispatchClosureAction($request, $action);
             } else if (gettype($action) === 'string') {
                 $controllerAction = $this->parseControllerAction($action);
 
-                return $this->dispatchControllerAction($request, ...$controllerAction);
+                $response = $this->dispatchControllerAction($request, ...$controllerAction);
             } else {
                 throw new InvalidRouteActionException("Invalid route action $action");
             }
+
+            return $response instanceof Response ? $response : response($response);
         } catch (Exception $exception) {
             throw $exception;
         }
     }
-
 
     /**
      * @param string $actionString
