@@ -1,6 +1,6 @@
 <?php
 
-use Core\Router\Router;
+use Acme\Router\Router;
 
 $router = new Router();
 

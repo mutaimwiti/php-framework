@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Dispatcher\Exceptions;
+namespace Acme\Dispatcher\Exceptions;
 
 use Exception;
 use Throwable;

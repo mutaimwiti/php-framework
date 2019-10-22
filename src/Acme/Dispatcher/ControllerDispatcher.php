@@ -1,10 +1,10 @@
 <?php
 
-namespace Core\Dispatcher;
+namespace Acme\Dispatcher;
 
-use Core\Request;
-use Core\Controller;
-use Core\Dispatcher\Exceptions\ControllerActionNotFoundException;
+use Acme\Request;
+use Acme\Controller;
+use Acme\Dispatcher\Exceptions\ControllerActionNotFoundException;
 
 class ControllerDispatcher {
     /**

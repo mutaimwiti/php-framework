@@ -1,15 +1,15 @@
 <?php
 
-namespace Core\Dispatcher;
+namespace Acme\Dispatcher;
 
 use Closure;
 use Exception;
-use Core\Request;
-use Core\Response;
-use Core\Router\Router;
-use Core\Dispatcher\Exceptions\InvalidRouteActionException;
-use Core\Dispatcher\Exceptions\ControllerNotFoundException;
-use Core\Dispatcher\Exceptions\ControllerActionNotFoundException;
+use Acme\Request;
+use Acme\Response;
+use Acme\Router\Router;
+use Acme\Dispatcher\Exceptions\InvalidRouteActionException;
+use Acme\Dispatcher\Exceptions\ControllerNotFoundException;
+use Acme\Dispatcher\Exceptions\ControllerActionNotFoundException;
 
 
 class Dispatcher

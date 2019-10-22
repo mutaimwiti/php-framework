@@ -1,10 +1,10 @@
 <?php
 
-namespace Core;
+namespace Acme;
 
 /**
  * Class Response
- * @package Core
+ * @package Acme
  * @property-read int status
  * @property-read mixed content
  * @property-read array headers

@@ -3,7 +3,7 @@
 namespace Tests\Router;
 
 use Tests\TestCase;
-use Core\Router\Router;
+use Acme\Router\Router;
 
 class RouteRegisterTest extends TestCase
 {

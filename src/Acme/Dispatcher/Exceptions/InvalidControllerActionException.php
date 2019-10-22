@@ -1,11 +1,11 @@
 <?php
 
-namespace Core\Dispatcher\Exceptions;
+namespace Acme\Dispatcher\Exceptions;
 
 use Exception;
 use Throwable;
 
-class ControllerActionNotFoundException extends Exception {
+class InvalidControllerActionException extends Exception {
     public function __construct(string $message = "", int $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);

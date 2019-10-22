@@ -3,7 +3,7 @@
 namespace Tests;
 
 use TypeError;
-use Core\Response;
+use Acme\Response;
 
 class ResponseTest extends TestCase
 {

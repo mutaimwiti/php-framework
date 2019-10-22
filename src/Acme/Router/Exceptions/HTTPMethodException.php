@@ -1,11 +1,11 @@
 <?php
 
-namespace Core\Router\Exceptions;
+namespace Acme\Router\Exceptions;
 
 use Exception;
 use Throwable;
 
-class RouteNotFoundException extends Exception {
+class HTTPMethodException extends Exception {
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);

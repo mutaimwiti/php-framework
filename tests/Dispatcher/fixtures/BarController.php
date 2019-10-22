@@ -2,6 +2,6 @@
 
 namespace Tests\Dispatcher\Fixtures;
 
-use Core\Controller;
+use Acme\Controller;
 
 class BarController extends Controller {}

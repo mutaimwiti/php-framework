@@ -22,6 +22,6 @@ if (!function_exists('dd')) {
 if (!function_exists('response')) {
     function response($content, $status = 200, $headers = [])
     {
-        return new \Core\Response($content, $status, $headers);
+        return new \Acme\Response($content, $status, $headers);
     }
 }
