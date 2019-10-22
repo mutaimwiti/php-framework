@@ -164,9 +164,9 @@ class Router
         if (array_key_exists($method, $this->routes)) {
             $uri = $request->uri();
 
-            $action = $this->getRoutes($method)[$uri];
-
-            if (!$action) {
+            if (isset($this->getRoutes($method)[$uri])) {
+                $action = $this->getRoutes($method)[$uri];
+            } else {
                 throw new RouteNotFoundException("Route $method $uri does not exist");
             }
 
