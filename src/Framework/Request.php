@@ -11,6 +11,8 @@ class Request
     protected $data = [];
     protected $query = [];
 
+    protected static $inputStream = 'php://input';
+
     /**
      * Request constructor.
      * Requires PHP super globals.
@@ -26,12 +28,13 @@ class Request
         $this->server = $server;
 
         $this->loadParams();
+        $this->loadRaw();
 
         return $this;
     }
 
     /**
-     * Load parameters instance super globals GET and POST.
+     * Load parameters from super globals GET and POST.
      */
     protected function loadParams()
     {
@@ -39,9 +42,42 @@ class Request
             $this->query[$key] = $value;
         }
 
-        foreach ($this->post as $key => $value) {
-            $this->data[$key] = $value;
+        // if we have a json request we will not load POST parameters
+        if (!$this->isJson()) {
+            foreach ($this->post as $key => $value) {
+                $this->data[$key] = $value;
+            }
         }
+    }
+
+    /**
+     * Load raw input.
+     */
+    protected function loadRaw()
+    {
+        if ($this->isJson()) {
+            $body = file_get_contents(self::$inputStream);
+
+            $data = json_decode($body, true);
+
+            if (!is_array($data)) {
+                $data = [];
+            }
+
+            foreach ($data as $key => $value) {
+                $this->data[$key] = $value;
+            }
+        }
+    }
+
+    /**
+     * Check if request is JSON.
+     * @return bool
+     */
+    public function isJson()
+    {
+        return isset($this->server['CONTENT_TYPE']) &&
+            (stripos($this->server['CONTENT_TYPE'], 'application/json') !== false);
     }
 
     /**

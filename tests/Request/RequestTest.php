@@ -1,11 +1,22 @@
 <?php
 
-namespace Tests;
+namespace Tests\Request;
 
+use Tests\TestCase;
 use Framework\Request;
 
 class RequestTest extends TestCase
 {
+    protected $rawInputFixtureFile;
+    protected $phpRawInputStream = 'php://input';
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->rawInputFixtureFile = __DIR__ . '/fixtures/raw_input.json';
+    }
+
     /** @test */
     function it_extracts_all_get_params()
     {
@@ -30,6 +41,72 @@ class RequestTest extends TestCase
         $instance = new Request([], $post, []);
 
         $this->assertEquals($expected, ($instance->all()));
+    }
+
+    /** @test
+     * @throws \ReflectionException
+     */
+    function it_extracts_all_raw_input_data()
+    {
+        // mock raw input stream to fixture
+        mock_static_property(Request::class, 'inputStream', $this->rawInputFixtureFile);
+
+        $instance = new Request([], [], ['CONTENT_TYPE' => 'application/json']);
+
+        // restore raw input stream to inbuilt php
+        mock_static_property(Request::class, 'inputStream', $this->phpRawInputStream);
+
+        $expected = ["foo" => "foo_val", "bar" => "bar_val"];
+
+        $this->assertEquals($expected, $instance->all());
+    }
+
+    /** @test
+     * @throws \ReflectionException
+     */
+    function it_should_only_extract_raw_data_when_content_type_is_json()
+    {
+        // mock raw input stream to fixture
+        mock_static_property(Request::class, 'inputStream', $this->rawInputFixtureFile);
+
+        // NOTE - content type is not set
+        $instance = new Request([], [], []);
+
+        // restore raw input stream to inbuilt php
+        mock_static_property(Request::class, 'inputStream', $this->phpRawInputStream);
+
+        $this->assertEquals([], $instance->all());
+    }
+
+    /** @test
+     * @throws \ReflectionException
+     */
+    function it_should_not_read_form_data_if_content_type_is_json()
+    {
+        // mock raw input stream to fixture
+        mock_static_property(Request::class, 'inputStream', $this->rawInputFixtureFile);
+
+        $jsonData = ["foo" => "foo_val", "bar" => "bar_val"];
+        $formData = ["jane" => "jane_val", "john" => "john_val"];
+
+        $instance = new Request([], $formData, ['CONTENT_TYPE' => 'application/json']);
+
+        // restore raw input stream to inbuilt php
+        mock_static_property(Request::class, 'inputStream', $this->phpRawInputStream);
+
+        $this->assertEquals($jsonData, $instance->all());
+    }
+
+    /** @test */
+    function it_tells_if_request_is_json_or_not()
+    {
+        $instance = new Request([], [], []);
+
+        $this->assertEquals(false, $instance->isJson());
+
+        $instance = new Request([], [], ['CONTENT_TYPE' => 'application/json']);
+
+        $this->assertEquals(true, $instance->isJson());
     }
 
     /** @test */
