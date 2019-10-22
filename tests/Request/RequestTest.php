@@ -25,9 +25,9 @@ class RequestTest extends TestCase
             "bar" => "bar_val",
         ];
 
-        $instance = new Request($get, [], []);
+        $request = new Request($get, [], []);
 
-        $this->assertEquals($expected, ($instance->all()));
+        $this->assertEquals($expected, ($request->all()));
     }
 
     /** @test */
@@ -38,9 +38,9 @@ class RequestTest extends TestCase
             "bar" => "bar_val",
         ];
 
-        $instance = new Request([], $post, []);
+        $request = new Request([], $post, []);
 
-        $this->assertEquals($expected, ($instance->all()));
+        $this->assertEquals($expected, ($request->all()));
     }
 
     /** @test
@@ -51,14 +51,14 @@ class RequestTest extends TestCase
         // mock raw input stream to fixture
         mock_static_property(Request::class, 'inputStream', $this->rawInputFixtureFile);
 
-        $instance = new Request([], [], ['CONTENT_TYPE' => 'application/json']);
+        $request = new Request([], [], ['CONTENT_TYPE' => 'application/json']);
 
         // restore raw input stream to inbuilt php
         mock_static_property(Request::class, 'inputStream', $this->phpRawInputStream);
 
         $expected = ["foo" => "foo_val", "bar" => "bar_val"];
 
-        $this->assertEquals($expected, $instance->all());
+        $this->assertEquals($expected, $request->all());
     }
 
     /** @test
@@ -70,12 +70,12 @@ class RequestTest extends TestCase
         mock_static_property(Request::class, 'inputStream', $this->rawInputFixtureFile);
 
         // NOTE - content type is not set
-        $instance = new Request([], [], []);
+        $request = new Request([], [], []);
 
         // restore raw input stream to inbuilt php
         mock_static_property(Request::class, 'inputStream', $this->phpRawInputStream);
 
-        $this->assertEquals([], $instance->all());
+        $this->assertEquals([], $request->all());
     }
 
     /** @test
@@ -89,24 +89,24 @@ class RequestTest extends TestCase
         $jsonData = ["foo" => "foo_val", "bar" => "bar_val"];
         $formData = ["jane" => "jane_val", "john" => "john_val"];
 
-        $instance = new Request([], $formData, ['CONTENT_TYPE' => 'application/json']);
+        $request = new Request([], $formData, ['CONTENT_TYPE' => 'application/json']);
 
         // restore raw input stream to inbuilt php
         mock_static_property(Request::class, 'inputStream', $this->phpRawInputStream);
 
-        $this->assertEquals($jsonData, $instance->all());
+        $this->assertEquals($jsonData, $request->all());
     }
 
     /** @test */
     function it_tells_if_request_is_json_or_not()
     {
-        $instance = new Request([], [], []);
+        $request = new Request([], [], []);
 
-        $this->assertEquals(false, $instance->isJson());
+        $this->assertEquals(false, $request->isJson());
 
-        $instance = new Request([], [], ['CONTENT_TYPE' => 'application/json']);
+        $request = new Request([], [], ['CONTENT_TYPE' => 'application/json']);
 
-        $this->assertEquals(true, $instance->isJson());
+        $this->assertEquals(true, $request->isJson());
     }
 
     /** @test */
@@ -117,19 +117,19 @@ class RequestTest extends TestCase
             "bar" => "bar_val",
         ];
 
-        $instance = new Request([], $post, []);
+        $request = new Request([], $post, []);
 
-        $this->assertEquals('foo_val', ($instance->get('foo')));
+        $this->assertEquals('foo_val', ($request->get('foo')));
     }
 
     /** @test */
     function it_returns_default_value_when_key_is_missing()
     {
-        $instance = new Request([], [], []);
+        $request = new Request([], [], []);
 
-        $this->assertEquals(null, ($instance->get('foo')));
+        $this->assertEquals(null, ($request->get('foo')));
 
-        $this->assertEquals('bar', ($instance->get('foo', 'bar')));
+        $this->assertEquals('bar', ($request->get('foo', 'bar')));
     }
 
     /** @test */
@@ -137,15 +137,15 @@ class RequestTest extends TestCase
     {
         $server = ['REQUEST_METHOD' => 'GET'];
 
-        $instance = new Request([], [], $server);
+        $request = new Request([], [], $server);
 
-        $this->assertEquals('GET', ($instance->method()));
+        $this->assertEquals('GET', ($request->method()));
 
         $server = ['REQUEST_METHOD' => 'POST'];
 
-        $instance = new Request([], [], $server);
+        $request = new Request([], [], $server);
 
-        $this->assertEquals('POST', ($instance->method()));
+        $this->assertEquals('POST', ($request->method()));
     }
 
     /** @test */
@@ -153,9 +153,9 @@ class RequestTest extends TestCase
     {
         $server = ['REQUEST_URI' => '/foo/bar/?php=true'];
 
-        $instance = new Request([], [], $server);
+        $request = new Request([], [], $server);
 
-        $this->assertEquals('foo/bar', ($instance->uri()));
+        $this->assertEquals('foo/bar', ($request->uri()));
     }
 
     /** @test */
@@ -163,9 +163,9 @@ class RequestTest extends TestCase
     {
         $server = ['REQUEST_URI' => '/'];
 
-        $instance = new Request([], [], $server);
+        $request = new Request([], [], $server);
 
-        $this->assertEquals('/', ($instance->uri()));
+        $this->assertEquals('/', ($request->uri()));
     }
 
     /** @test */
