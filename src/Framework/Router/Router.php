@@ -1,11 +1,11 @@
 <?php
 
-namespace Acme\Router;
+namespace Framework\Router;
 
 use Closure;
-use Acme\Request;
-use Acme\Router\Exceptions\HTTPMethodException;
-use Acme\Router\Exceptions\RouteNotFoundException;
+use Framework\Request;
+use Framework\Router\Exceptions\HTTPMethodException;
+use Framework\Router\Exceptions\RouteNotFoundException;
 
 class Router
 {

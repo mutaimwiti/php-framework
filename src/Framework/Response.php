@@ -1,10 +1,10 @@
 <?php
 
-namespace Acme;
+namespace Framework;
 
 /**
  * Class Response
- * @package Acme
+ * @package Framework
  * @property-read int status
  * @property-read mixed content
  * @property-read array headers

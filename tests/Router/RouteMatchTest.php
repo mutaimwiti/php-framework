@@ -2,11 +2,11 @@
 
 namespace Tests\Router;
 
-use Acme\Request;
+use Framework\Request;
 use Tests\TestCase;
-use Acme\Router\Router;
-use Acme\Router\Exceptions\HTTPMethodException;
-use Acme\Router\Exceptions\RouteNotFoundException;
+use Framework\Router\Router;
+use Framework\Router\Exceptions\HTTPMethodException;
+use Framework\Router\Exceptions\RouteNotFoundException;
 
 class RouteMatchTest extends TestCase {
     /** @test */

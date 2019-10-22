@@ -3,11 +3,11 @@
 namespace Tests\Dispatcher;
 
 use Mockery;
-use Acme\Request;
+use Framework\Request;
 use Tests\TestCase;
-use Acme\Dispatcher\ControllerDispatcher;
+use Framework\Dispatcher\ControllerDispatcher;
 use Tests\Dispatcher\Fixtures\FooController;
-use Acme\Dispatcher\Exceptions\ControllerActionNotFoundException;
+use Framework\Dispatcher\Exceptions\ControllerActionNotFoundException;
 
 class ControllerDispatcherTest extends TestCase
 {

@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Acme\Request;
+use Framework\Request;
 
 class RequestTest extends TestCase
 {

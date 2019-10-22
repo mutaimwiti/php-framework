@@ -8,9 +8,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Acme\\": "src/Acme/"
+            "Framework\\": "src/Framework/"
         },
-        "files": ["src/Acme/helpers.php"]
+        "files": ["src/Framework/helpers.php"]
     },
     "autoload-dev": {
         "psr-4": {

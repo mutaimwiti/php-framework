@@ -3,14 +3,14 @@
 namespace Tests\Dispatcher;
 
 use Mockery;
-use Acme\Request;
-use Acme\Response;
+use Framework\Request;
+use Framework\Response;
 use Tests\TestCase;
-use Acme\Controller;
-use Acme\Router\Router;
-use Acme\Dispatcher\Dispatcher;
-use Acme\Dispatcher\ControllerDispatcher;
-use Acme\Router\Exceptions\RouteNotFoundException;
+use Framework\Controller;
+use Framework\Router\Router;
+use Framework\Dispatcher\Dispatcher;
+use Framework\Dispatcher\ControllerDispatcher;
+use Framework\Router\Exceptions\RouteNotFoundException;
 
 class DispatcherTest extends TestCase
 {

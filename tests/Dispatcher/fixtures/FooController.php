@@ -2,8 +2,8 @@
 
 namespace Tests\Dispatcher\Fixtures;
 
-use Acme\Controller;
-use Acme\Request;
+use Framework\Controller;
+use Framework\Request;
 
 class FooController extends Controller {
     public function index(Request $request) {

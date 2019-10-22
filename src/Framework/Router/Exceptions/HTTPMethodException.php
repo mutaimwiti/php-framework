@@ -1,6 +1,6 @@
 <?php
 
-namespace Acme\Router\Exceptions;
+namespace Framework\Router\Exceptions;
 
 use Exception;
 use Throwable;

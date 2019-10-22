@@ -3,7 +3,7 @@
 namespace Tests\Router;
 
 use Tests\TestCase;
-use Acme\Router\Router;
+use Framework\Router\Router;
 
 class RoutePrefixTest extends TestCase {
     /** @test */

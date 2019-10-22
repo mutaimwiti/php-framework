@@ -2,7 +2,7 @@
 
 namespace Tests\Router;
 
-use Acme\Router\Router;
+use Framework\Router\Router;
 
 class RouteNamespaceTest {
     /** @test */
@@ -14,14 +14,14 @@ class RouteNamespaceTest {
             $router->get('users', 'UsersController@index');
         });
 
-        $router->namespace('App\Controllers\Acme', function ($router) {
+        $router->namespace('App\Controllers\Framework', function ($router) {
             $router->post('reports', 'ReportsController@store');
         });
 
 
         $expected = [
             'GET' => ['users' => 'App\Controllers\UsersController@index'],
-            'POST' => ['reports' => 'App\Controllers\Acme\ReportsController@store'],
+            'POST' => ['reports' => 'App\Controllers\Framework\ReportsController@store'],
         ];
 
         $this->assertEquals($expected, $router->getRoutes());
