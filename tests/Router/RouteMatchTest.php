@@ -2,8 +2,8 @@
 
 namespace Tests\Router;
 
-use Framework\Request;
 use Tests\TestCase;
+use Framework\Request;
 use Framework\Router\Router;
 use Framework\Router\Exceptions\HTTPMethodException;
 use Framework\Router\Exceptions\RouteNotFoundException;

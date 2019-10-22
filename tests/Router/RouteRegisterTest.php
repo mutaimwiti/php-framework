@@ -27,7 +27,7 @@ class RouteRegisterTest extends TestCase
             'reports' => $reportsClosure,
         ];
 
-        $this->assertEquals($expected, $router->getRoutes('GET'));
+        $this->assertEquals($expected, $router->routes['GET']);
     }
 
     /** @test */
@@ -47,7 +47,7 @@ class RouteRegisterTest extends TestCase
             'reports' => $reportsClosure,
         ];
 
-        $this->assertEquals($expected, $router->getRoutes('POST'));
+        $this->assertEquals($expected, $router->routes['POST']);
     }
 
     /** @test */
@@ -63,7 +63,7 @@ class RouteRegisterTest extends TestCase
             'POST' => ['/' => 'HomeController@store'],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 
     /** @test */
@@ -79,7 +79,7 @@ class RouteRegisterTest extends TestCase
             'POST' => ['api/users' => 'UsersController@store'],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 
     /** @test */
@@ -95,7 +95,7 @@ class RouteRegisterTest extends TestCase
             'POST' => ['api/users' => 'UsersController@store'],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 
     /** @test */
@@ -111,7 +111,7 @@ class RouteRegisterTest extends TestCase
             'POST' => ['api/users' => 'UsersController@store'],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 
     /** @test */
@@ -127,22 +127,6 @@ class RouteRegisterTest extends TestCase
             'POST' => ['api/users' => 'UsersController@store'],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
-    }
-
-    /** @test */
-    function it_returns_all_routes()
-    {
-        $router = new Router();
-
-        $router->get('users', 'UsersController@index');
-        $router->post('users', 'UsersController@store');
-
-        $expected = [
-            'GET' => ['users' => 'UsersController@index'],
-            'POST' => ['users' => 'UsersController@store'],
-        ];
-
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 }

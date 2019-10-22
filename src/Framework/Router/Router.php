@@ -7,6 +7,11 @@ use Framework\Request;
 use Framework\Router\Exceptions\HTTPMethodException;
 use Framework\Router\Exceptions\RouteNotFoundException;
 
+/**
+ * Class Router
+ * @package Framework\Router
+ * @property-read array $routes
+ */
 class Router
 {
     protected $prefix = '';
@@ -143,12 +148,12 @@ class Router
     }
 
     /**
-     * @param null $method
+     * @param $property
      * @return array|null
      */
-    public function getRoutes($method = null)
+    public function __get($property)
     {
-        return $method ? $this->routes[$method] : $this->routes;
+        return $property === 'routes' ? $this->routes : null;
     }
 
     /**
@@ -164,8 +169,8 @@ class Router
         if (array_key_exists($method, $this->routes)) {
             $uri = $request->uri();
 
-            if (isset($this->getRoutes($method)[$uri])) {
-                $action = $this->getRoutes($method)[$uri];
+            if (isset($this->routes[$method][$uri])) {
+                $action = $this->routes[$method][$uri];
             } else {
                 throw new RouteNotFoundException("Route $method $uri does not exist");
             }

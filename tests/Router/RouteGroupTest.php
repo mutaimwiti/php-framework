@@ -26,7 +26,7 @@ class RouteGroupTest extends TestCase {
             'GET' => ['api/users' => $usersCallback],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 
     /** @test */
@@ -45,7 +45,7 @@ class RouteGroupTest extends TestCase {
             'GET' => ['users' => 'UserController@index'],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 
     /** @test */
@@ -78,7 +78,7 @@ class RouteGroupTest extends TestCase {
             ]
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 
     /** @test */
@@ -97,7 +97,7 @@ class RouteGroupTest extends TestCase {
             'POST' => ['reports' => 'ReportController@store']
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 
     /** @test */
@@ -116,6 +116,6 @@ class RouteGroupTest extends TestCase {
             ],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 }

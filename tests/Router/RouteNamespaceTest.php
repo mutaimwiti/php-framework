@@ -24,7 +24,7 @@ class RouteNamespaceTest {
             'POST' => ['reports' => 'App\Controllers\Framework\ReportsController@store'],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 
     /** @test */
@@ -43,6 +43,6 @@ class RouteNamespaceTest {
             'GET' => ['articles' => 'ArticleController@index'],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 }

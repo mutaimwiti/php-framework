@@ -28,7 +28,7 @@ class RoutePrefixTest extends TestCase {
             'POST' => ['admin/reports' => $reportsCallback],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 
     /** @test */
@@ -51,6 +51,6 @@ class RoutePrefixTest extends TestCase {
             'POST' => ['reports' => $reportsCallback],
         ];
 
-        $this->assertEquals($expected, $router->getRoutes());
+        $this->assertEquals($expected, $router->routes);
     }
 }
