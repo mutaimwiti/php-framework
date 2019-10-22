@@ -1,7 +1,11 @@
 {
-    "name": "mutaimwiti/vanilla-php",
-    "description": "Vanilla PHP",
-    "type": "project",
+    "name": "mutaimwiti/php-framework",
+    "authors": [
+        {
+            "name": "Mutai Mwiti"
+        }
+    ],
+    "description": "PHP Framework",
     "license": "MIT",
     "require": {
         "ext-json": "^1.5"
