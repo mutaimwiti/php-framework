@@ -51,16 +51,82 @@ class RouteRegisterTest extends TestCase
     }
 
     /** @test */
+    function it_registers_put_routes()
+    {
+        $router = new Router();
+
+        $reportsClosure = function () {
+            return 'Updated Report';
+        };
+
+        $router->put('users', 'UsersController@update');
+        $router->put('reports', $reportsClosure);
+
+        $expected = [
+            'users' => 'UsersController@update',
+            'reports' => $reportsClosure,
+        ];
+
+        $this->assertEquals($expected, $router->routes['PUT']);
+    }
+
+    /** @test */
+    function it_registers_patch_routes()
+    {
+        $router = new Router();
+
+        $reportsClosure = function () {
+            return 'Updated Report';
+        };
+
+        $router->patch('users', 'UsersController@update');
+        $router->patch('reports', $reportsClosure);
+
+        $expected = [
+            'users' => 'UsersController@update',
+            'reports' => $reportsClosure,
+        ];
+
+        $this->assertEquals($expected, $router->routes['PATCH']);
+    }
+
+    /** @test */
+    function it_registers_delete_routes()
+    {
+        $router = new Router();
+
+        $reportsClosure = function () {
+            return 'Deleted Report';
+        };
+
+        $router->delete('users', 'UsersController@destory');
+        $router->delete('reports', $reportsClosure);
+
+        $expected = [
+            'users' => 'UsersController@destory',
+            'reports' => $reportsClosure,
+        ];
+
+        $this->assertEquals($expected, $router->routes['DELETE']);
+    }
+
+    /** @test */
     function it_correctly_registers_root_routes()
     {
         $router = new Router();
 
         $router->get('/', 'HomeController@index');
         $router->post('/', 'HomeController@store');
+        $router->put('/', 'HomeController@update');
+        $router->patch('/', 'HomeController@update');
+        $router->delete('/', 'HomeController@destory');
 
         $expected = [
             'GET' => ['/' => 'HomeController@index'],
             'POST' => ['/' => 'HomeController@store'],
+            'PUT' => ['/' => 'HomeController@update'],
+            'PATCH' => ['/' => 'HomeController@update'],
+            'DELETE' => ['/' => 'HomeController@destory'],
         ];
 
         $this->assertEquals($expected, $router->routes);
@@ -73,10 +139,16 @@ class RouteRegisterTest extends TestCase
 
         $router->get('api/users/', 'UsersController@index');
         $router->post('api/users/', 'UsersController@store');
+        $router->put('api/users/', 'UsersController@update');
+        $router->patch('api/users/', 'UsersController@update');
+        $router->delete('api/users/', 'UsersController@destory');
 
         $expected = [
             'GET' => ['api/users' => 'UsersController@index'],
             'POST' => ['api/users' => 'UsersController@store'],
+            'PUT' => ['api/users' => 'UsersController@update'],
+            'PATCH' => ['api/users' => 'UsersController@update'],
+            'DELETE' => ['api/users' => 'UsersController@destory'],
         ];
 
         $this->assertEquals($expected, $router->routes);
@@ -89,10 +161,16 @@ class RouteRegisterTest extends TestCase
 
         $router->get('/api/users', 'UsersController@index');
         $router->post('/api/users', 'UsersController@store');
+        $router->put('/api/users', 'UsersController@update');
+        $router->patch('/api/users', 'UsersController@update');
+        $router->delete('/api/users', 'UsersController@destory');
 
         $expected = [
             'GET' => ['api/users' => 'UsersController@index'],
             'POST' => ['api/users' => 'UsersController@store'],
+            'PUT' => ['api/users' => 'UsersController@update'],
+            'PATCH' => ['api/users' => 'UsersController@update'],
+            'DELETE' => ['api/users' => 'UsersController@destory'],
         ];
 
         $this->assertEquals($expected, $router->routes);
@@ -105,10 +183,16 @@ class RouteRegisterTest extends TestCase
 
         $router->get('/api/users/', 'UsersController@index');
         $router->post('/api/users/', 'UsersController@store');
+        $router->put('/api/users/', 'UsersController@update');
+        $router->patch('/api/users/', 'UsersController@update');
+        $router->delete('/api/users/', 'UsersController@destory');
 
         $expected = [
             'GET' => ['api/users' => 'UsersController@index'],
             'POST' => ['api/users' => 'UsersController@store'],
+            'PUT' => ['api/users' => 'UsersController@update'],
+            'PATCH' => ['api/users' => 'UsersController@update'],
+            'DELETE' => ['api/users' => 'UsersController@destory'],
         ];
 
         $this->assertEquals($expected, $router->routes);
@@ -121,10 +205,16 @@ class RouteRegisterTest extends TestCase
 
         $router->get('///api/users///', 'UsersController@index');
         $router->post('///api/users///', 'UsersController@store');
+        $router->put('///api/users///', 'UsersController@update');
+        $router->patch('///api/users///', 'UsersController@update');
+        $router->delete('///api/users///', 'UsersController@destory');
 
         $expected = [
             'GET' => ['api/users' => 'UsersController@index'],
             'POST' => ['api/users' => 'UsersController@store'],
+            'PUT' => ['api/users' => 'UsersController@update'],
+            'PATCH' => ['api/users' => 'UsersController@update'],
+            'DELETE' => ['api/users' => 'UsersController@destory'],
         ];
 
         $this->assertEquals($expected, $router->routes);

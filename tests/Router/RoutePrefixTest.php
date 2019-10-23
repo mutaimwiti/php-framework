@@ -4,8 +4,11 @@ namespace Tests\Router;
 
 use Tests\TestCase;
 use Framework\Router\Router;
+use Tests\Utilities\Router\RoutesBare;
 
 class RoutePrefixTest extends TestCase {
+    use RoutesBare;
+
     /** @test */
     function it_should_apply_route_prefixes()
     {
@@ -23,10 +26,10 @@ class RoutePrefixTest extends TestCase {
             $router->post('reports', $reportsCallback);
         });
 
-        $expected = [
+        $expected = array_merge($this->routesBare, [
             'GET' => ['api/users' => 'UsersController@index'],
             'POST' => ['admin/reports' => $reportsCallback],
-        ];
+        ]);
 
         $this->assertEquals($expected, $router->routes);
     }
@@ -46,10 +49,10 @@ class RoutePrefixTest extends TestCase {
 
         $router->post('reports', $reportsCallback);
 
-        $expected = [
+        $expected = array_merge($this->routesBare, [
             'GET' => ['api/users' => 'UsersController@index'],
             'POST' => ['reports' => $reportsCallback],
-        ];
+        ]);
 
         $this->assertEquals($expected, $router->routes);
     }

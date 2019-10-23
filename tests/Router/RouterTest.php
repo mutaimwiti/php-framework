@@ -2,17 +2,20 @@
 
 namespace Tests\Router;
 
-use Framework\Router\Router;
 use Tests\TestCase;
+use Framework\Router\Router;
+use Tests\Utilities\Router\RoutesBare;
 
 class RouterTest extends TestCase
 {
+    use RoutesBare;
+
     /** @test */
     function it_returns_all_routes()
     {
         $router = new Router();
 
-        $expected = ['GET' => [], 'POST' => []];
+        $expected = $this->routesBare;
 
         $this->assertEquals($expected, $router->routes);
     }

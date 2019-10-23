@@ -20,6 +20,9 @@ class Router
     protected $routes = [
         'POST' => [],
         'GET' => [],
+        'PUT' => [],
+        'PATCH' => [],
+        'DELETE' => [],
     ];
 
     /**
@@ -28,9 +31,7 @@ class Router
      */
     public function get($uri, $action)
     {
-        $route = $this->applyWrappers($uri, $action);
-
-        $this->routes['GET'][$route->uri] = $route->action;
+        $this->registerRoute('GET', $uri, $action);
     }
 
     /**
@@ -39,9 +40,47 @@ class Router
      */
     public function post($uri, $action)
     {
+        $this->registerRoute('POST', $uri, $action);
+    }
+
+    /**
+     * @param $uri
+     * @param $action
+     */
+    public function put($uri, $action)
+    {
+        $this->registerRoute('PUT', $uri, $action);
+    }
+
+    /**
+     * @param $uri
+     * @param $action
+     */
+    public function patch($uri, $action)
+    {
+        $this->registerRoute('PATCH', $uri, $action);
+    }
+
+    /**
+     * @param $uri
+     * @param $action
+     */
+    public function delete($uri, $action)
+    {
+        $this->registerRoute('DELETE', $uri, $action);
+    }
+
+    /**
+     * Register route. Add all wrappers before registering.
+     *
+     * @param $method
+     * @param $uri
+     * @param $action
+     */
+    protected function registerRoute($method, $uri, $action) {
         $route = $this->applyWrappers($uri, $action);
 
-        $this->routes['POST'][$route->uri] = $route->action;
+        $this->routes[$method][$route->uri] = $route->action;
     }
 
     protected function extendNamespace($name)

@@ -4,8 +4,12 @@ namespace Tests\Router;
 
 use Tests\TestCase;
 use Framework\Router\Router;
+use Tests\Utilities\Router\RoutesBare;
 
-class RouteGroupTest extends TestCase {
+class RouteGroupTest extends TestCase
+{
+    use RoutesBare;
+
     /** @test */
     function it_should_apply_route_groups_correctly()
     {
@@ -16,15 +20,15 @@ class RouteGroupTest extends TestCase {
             return 'Users';
         };
 
-        $router->group(['namespace' => 'Controllers', 'prefix' => 'api'], function ($router) use ($usersCallback) {
+        $router->group(['namespace' => 'Controllers', 'prefix' => 'api'], function (Router $router) use ($usersCallback) {
             $router->post('reports', 'ReportController@store');
             $router->get('users', $usersCallback);
         });
 
-        $expected = [
+        $expected = array_merge($this->routesBare, [
             'POST' => ['api/reports' => 'Controllers\ReportController@store'],
             'GET' => ['api/users' => $usersCallback],
-        ];
+        ]);
 
         $this->assertEquals($expected, $router->routes);
     }
@@ -35,15 +39,15 @@ class RouteGroupTest extends TestCase {
         $router = new Router();
 
         $router->group(['namespace' => 'App\Controllers', 'prefix' => 'api'], function ($router) {
-            $router->post('reports', 'ReportController@store');
+            $router->patch('reports', 'ReportController@update');
         });
 
-        $router->get('users', 'UserController@index');
+        $router->put('users', 'UserController@update');
 
-        $expected = [
-            'POST' => ['api/reports' => 'App\Controllers\ReportController@store'],
-            'GET' => ['users' => 'UserController@index'],
-        ];
+        $expected = array_merge($this->routesBare, [
+            'PATCH' => ['api/reports' => 'App\Controllers\ReportController@update'],
+            'PUT' => ['users' => 'UserController@update'],
+        ]);
 
         $this->assertEquals($expected, $router->routes);
     }
@@ -60,23 +64,19 @@ class RouteGroupTest extends TestCase {
 
         // namespace only
         $router->group(['namespace' => 'App\Controllers'], function ($router) {
-            $router->get('users', 'UserController@index');
+            $router->patch('users', 'UserController@update');
         });
 
         // prefix only
         $router->group(['prefix' => 'api'], function ($router) {
-            $router->post('articles', 'ArticleController@store');
+            $router->delete('articles', 'ArticleController@destroy');
         });
 
-        $expected = [
-            'POST' => [
-                'reports' => 'ReportController@store',
-                'api/articles' => 'ArticleController@store',
-            ],
-            'GET' => [
-                'users' => 'App\Controllers\UserController@index',
-            ]
-        ];
+        $expected = array_merge($this->routesBare, [
+            'POST' => ['reports' => 'ReportController@store'],
+            'PATCH' => ['users' => 'App\Controllers\UserController@update'],
+            'DELETE' => ['api/articles' => 'ArticleController@destroy']
+        ]);
 
         $this->assertEquals($expected, $router->routes);
     }
@@ -92,10 +92,10 @@ class RouteGroupTest extends TestCase {
             $router->post('reports', 'ReportController@store');
         });
 
-        $expected = [
+        $expected = array_merge($this->routesBare, [
             'GET' => ['users' => 'UserController@index'],
             'POST' => ['reports' => 'ReportController@store']
-        ];
+        ]);
 
         $this->assertEquals($expected, $router->routes);
     }
@@ -106,7 +106,7 @@ class RouteGroupTest extends TestCase {
         // get routes with complex nesting of namespaces and prefixes
         $router = require 'fixtures/nested_routes.php';
 
-        $expected = [
+        $expected = array_merge($this->routesBare, [
             'POST' => [
                 'admin/api/v1/users' => 'App\Controllers\API\V1\UsersController@store'
             ],
@@ -114,7 +114,7 @@ class RouteGroupTest extends TestCase {
                 'admin/api/v2/reports' => 'App\Controllers\API\V2\ReportsController@index',
                 'admin/api/info' => 'App\Controllers\API\MasterController@info',
             ],
-        ];
+        ]);
 
         $this->assertEquals($expected, $router->routes);
     }
