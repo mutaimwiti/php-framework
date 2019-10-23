@@ -3,17 +3,33 @@
 namespace Tests\Dispatcher;
 
 use Mockery;
+use Tests\TestCase;
 use Framework\Request;
 use Framework\Response;
-use Tests\TestCase;
 use Framework\Controller;
 use Framework\Routing\Router;
+use Framework\Routing\RouteAction;
 use Framework\Dispatcher\Dispatcher;
 use Framework\Dispatcher\ControllerDispatcher;
 use Framework\Routing\Exceptions\RouteNotFoundException;
 
 class DispatcherTest extends TestCase
 {
+    protected function createRouterMock()
+    {
+        return Mockery::mock(Router::class);
+    }
+
+    protected function createRouteActionMock($handler, $arguments = [])
+    {
+        return Mockery::mock(RouteAction::class, [$handler, $arguments]);
+    }
+
+    protected function createControllerDispatcherMock()
+    {
+        return Mockery::mock(ControllerDispatcher::class);
+    }
+
     /** @test */
     function it_rethrows_exceptions_from_router()
     {
@@ -21,14 +37,12 @@ class DispatcherTest extends TestCase
         // we only test one exception - RouteNotFoundException
         $this->expectException(RouteNotFoundException::class);
 
-        $routerMock = Mockery::mock(Router::class);
+        $routerMock = $this->createRouterMock();
 
         $routerMock->shouldReceive('match')
             ->andThrow(RouteNotFoundException::class);
 
-        $controllerDispatcherMock = Mockery::mock(ControllerDispatcher::class);
-
-        $dispatcher = new Dispatcher($routerMock, $controllerDispatcherMock);
+        $dispatcher = new Dispatcher($routerMock, $this->createControllerDispatcherMock());
 
         $dispatcher->handle(Request::create());
     }
@@ -42,16 +56,16 @@ class DispatcherTest extends TestCase
             return response("$status foo");
         };
 
-        $routerMock = Mockery::mock(Router::class);
+        $routerMock = $this->createRouterMock();
+
+        $routeActionMock = $this->createRouteActionMock($closure);
 
         $routerMock->shouldReceive('match')
-            ->andReturn($closure);
+            ->andReturn($routeActionMock);
 
         $request = Request::create('foo', 'GET', ['status' => 'cool']);
 
-        $controllerDispatcherMock = Mockery::mock(ControllerDispatcher::class);
-
-        $dispatcher = new Dispatcher($routerMock, $controllerDispatcherMock);
+        $dispatcher = new Dispatcher($routerMock, $this->createControllerDispatcherMock());
 
         $response = $dispatcher->handle($request);
 
@@ -63,16 +77,21 @@ class DispatcherTest extends TestCase
     {
         $request = Request::create();
 
-        $controllerDispatcherMock = Mockery::mock(ControllerDispatcher::class);
+        $controllerDispatcherMock = $this->createControllerDispatcherMock();
 
         $controllerDispatcherMock->shouldReceive('dispatch')
-            ->with($request, Controller::class, 'index')
+            ->with($request, Controller::class, 'index', ['john' => 'doe'])
             ->once();
 
-        $routerMock = Mockery::mock(Router::class);
+        $routerMock = $this->createRouterMock();
+
+        $routeActionMock = $this->createRouteActionMock(
+            'Tests\Dispatcher\Fixtures\FooController@index',
+            ['john' => 'doe']
+        );
 
         $routerMock->shouldReceive('match')
-            ->andReturn('Tests\Dispatcher\Fixtures\FooController@index');
+            ->andReturn($routeActionMock);
 
         $dispatcher = new Dispatcher($routerMock, $controllerDispatcherMock);
 
@@ -82,18 +101,20 @@ class DispatcherTest extends TestCase
     /** @test */
     function it_automatically_casts_closure_response_to_response_instance()
     {
-        $routerMock = Mockery::mock(Router::class);
+        $routerMock = $this->createRouterMock();
+
+        $closure = function () {
+            return [];
+        };
+
+        $routeActionMock = Mockery::mock(RouteAction::class, [$closure]);
 
         $routerMock->shouldReceive('match')
-            ->andReturn(function () {
-                return [];
-            });
+            ->andReturn($routeActionMock);
 
         $request = Request::create('foo');
 
-        $controllerDispatcherMock = Mockery::mock(ControllerDispatcher::class);
-
-        $dispatcher = new Dispatcher($routerMock, $controllerDispatcherMock);
+        $dispatcher = new Dispatcher($routerMock, $this->createControllerDispatcherMock());
 
         $response = $dispatcher->handle($request);
 
@@ -104,14 +125,16 @@ class DispatcherTest extends TestCase
     /** @test */
     function it_automatically_casts_controller_response_to_response_instance()
     {
-        $routerMock = Mockery::mock(Router::class);
+        $routerMock = $this->createRouterMock();
+
+        $routeActionMock = $this->createRouteActionMock('Tests\Dispatcher\Fixtures\BarController@get');
 
         $routerMock->shouldReceive('match')
-            ->andReturn('Tests\Dispatcher\Fixtures\BarController@get');
+            ->andReturn($routeActionMock);
 
         $request = Request::create('bar');
 
-        $controllerDispatcherMock = Mockery::mock(ControllerDispatcher::class);
+        $controllerDispatcherMock = $this->createControllerDispatcherMock();
 
         $controllerDispatcherMock->shouldReceive('dispatch')
             ->andReturn([]);

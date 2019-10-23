@@ -2,7 +2,6 @@
 
 namespace Framework\Routing;
 
-use Closure;
 use Framework\Request;
 use Framework\Routing\Exceptions\HTTPMethodException;
 use Framework\Routing\Exceptions\RouteNotFoundException;
@@ -77,7 +76,8 @@ class Router
      * @param $uri
      * @param $action
      */
-    protected function registerRoute($method, $uri, $action) {
+    protected function registerRoute($method, $uri, $action)
+    {
         $route = $this->applyWrappers($uri, $action);
 
         $this->routes[$method][$route->uri] = $route->action;
@@ -197,7 +197,7 @@ class Router
 
     /**
      * @param Request $request
-     * @return bool|string|Closure
+     * @return RouteAction
      * @throws RouteNotFoundException
      * @throws HTTPMethodException
      */
@@ -209,12 +209,12 @@ class Router
             $uri = $request->uri();
 
             if (isset($this->routes[$method][$uri])) {
-                $action = $this->routes[$method][$uri];
+                $route = new RouteAction($this->routes[$method][$uri]);
             } else {
                 throw new RouteNotFoundException("Route $method $uri does not exist");
             }
 
-            return $action;
+            return $route;
         }
 
         throw new HTTPMethodException("Method $method is not allowed");

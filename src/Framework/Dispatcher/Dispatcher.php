@@ -7,6 +7,7 @@ use Exception;
 use Framework\Request;
 use Framework\Response;
 use Framework\Routing\Router;
+use Framework\Routing\RouteAction;
 use Framework\Dispatcher\Exceptions\InvalidRouteActionException;
 use Framework\Dispatcher\Exceptions\ControllerNotFoundException;
 use Framework\Dispatcher\Exceptions\ControllerActionNotFoundException;
@@ -37,14 +38,16 @@ class Dispatcher
     public function handle(Request $request)
     {
         try {
-            $action = $this->router->match($request);
+            $routeAction = $this->router->match($request);
 
-            if ($action instanceof Closure) {
-                $response = $this->dispatchClosureAction($request, $action);
-            } else if (is_string($action)) {
-                $response = $this->dispatchControllerAction($request, $action);
+            $handler = $routeAction->handler;
+
+            if ($handler instanceof Closure) {
+                $response = $this->dispatchClosureAction($request, $routeAction);
+            } else if (is_string($handler)) {
+                $response = $this->dispatchControllerAction($request, $routeAction);
             } else {
-                throw new InvalidRouteActionException("Invalid route action $action");
+                throw new InvalidRouteActionException("Invalid route action $handler");
             }
 
             return $response instanceof Response ? $response : response($response);
@@ -55,30 +58,35 @@ class Dispatcher
 
     /**
      * @param Request $request
-     * @param Closure $action
+     * @param RouteAction $routeAction
      * @return mixed
      */
-    protected function dispatchClosureAction(Request $request, Closure $action)
+    protected function dispatchClosureAction(Request $request, RouteAction $routeAction)
     {
-        return call_user_func($action, $request);
+        return call_user_func($routeAction->handler, $request, ...$routeAction->arguments);
     }
 
     /**
      * @param Request $request
-     * @param string $action
+     * @param RouteAction $routeAction
      * @return mixed
      * @throws ControllerActionNotFoundException
      * @throws ControllerNotFoundException
      * @throws InvalidRouteActionException
      */
-    protected function dispatchControllerAction(Request $request, string $action)
+    protected function dispatchControllerAction(Request $request, RouteAction $routeAction)
     {
-        [$controller, $method] = $this->parseControllerAction($action);
+        [$controller, $method] = $this->parseControllerAction($routeAction->handler);
 
         if (class_exists($controller)) {
             $controllerInstance = new $controller;
 
-            return $this->controllerDispatcher->dispatch($request, $controllerInstance, $method);
+            return $this->controllerDispatcher->dispatch(
+                $request,
+                $controllerInstance,
+                $method,
+                $routeAction->arguments
+            );
         } else {
             throw new ControllerNotFoundException(
                 "Controller $controller does not exist"

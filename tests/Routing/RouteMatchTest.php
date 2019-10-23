@@ -5,10 +5,25 @@ namespace Tests\Routing;
 use Tests\TestCase;
 use Framework\Request;
 use Framework\Routing\Router;
+use Framework\Routing\RouteAction;
 use Framework\Routing\Exceptions\HTTPMethodException;
 use Framework\Routing\Exceptions\RouteNotFoundException;
 
-class RouteMatchTest extends TestCase {
+class RouteMatchTest extends TestCase
+{
+    /** @test */
+    function it_returns_a_route_instance()
+    {
+        $router = new Router();
+
+        $router->get('foo', 'FooController@index');
+
+        $request = Request::create('foo', 'GET');
+
+        $this->assertInstanceOf(RouteAction::class, $router->match($request));
+    }
+
+
     /** @test */
     function it_matches_controller_requests_correctly()
     {
@@ -18,10 +33,11 @@ class RouteMatchTest extends TestCase {
 
         $router->get('users', $actionString);
 
-        // simulate request
         $request = Request::create('users', 'GET');
 
-        $this->assertEquals($actionString, $router->match($request));
+        $expected = new RouteAction($actionString);
+
+        $this->assertEquals($expected, $router->match($request));
     }
 
     /** @test */
@@ -35,9 +51,11 @@ class RouteMatchTest extends TestCase {
 
         $router->post('reports', $reportsClosure);
 
-        // simulate request
         $request = Request::create('reports', 'POST');
-        $this->assertEquals($reportsClosure, $router->match($request));
+
+        $expected = new RouteAction($reportsClosure);
+
+        $this->assertEquals($expected, $router->match($request));
     }
 
     /** @test */
@@ -46,16 +64,12 @@ class RouteMatchTest extends TestCase {
         $router = new Router();
 
         $router->get('/', 'HomeController@index');
-        $router->post('/', 'HomeController@store');
 
-        // simulate GET request
-        $getRequest = Request::create('/', 'GET');
+        $request = Request::create('/', 'GET');
 
-        // simulate POST request
-        $postRequest = Request::create('/', 'POST');
+        $expected = new RouteAction('HomeController@index');
 
-        $this->assertEquals('HomeController@index', $router->match($getRequest));
-        $this->assertEquals('HomeController@store', $router->match($postRequest));
+        $this->assertEquals($expected, $router->match($request));
     }
 
     /** @test */

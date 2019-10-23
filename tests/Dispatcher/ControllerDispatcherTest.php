@@ -3,10 +3,10 @@
 namespace Tests\Dispatcher;
 
 use Mockery;
-use Framework\Request;
 use Tests\TestCase;
-use Framework\Dispatcher\ControllerDispatcher;
+use Framework\Request;
 use Tests\Dispatcher\Fixtures\FooController;
+use Framework\Dispatcher\ControllerDispatcher;
 use Framework\Dispatcher\Exceptions\ControllerActionNotFoundException;
 
 class ControllerDispatcherTest extends TestCase
