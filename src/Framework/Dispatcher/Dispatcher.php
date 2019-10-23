@@ -6,7 +6,7 @@ use Closure;
 use Exception;
 use Framework\Request;
 use Framework\Response;
-use Framework\Router\Router;
+use Framework\Routing\Router;
 use Framework\Dispatcher\Exceptions\InvalidRouteActionException;
 use Framework\Dispatcher\Exceptions\ControllerNotFoundException;
 use Framework\Dispatcher\Exceptions\ControllerActionNotFoundException;

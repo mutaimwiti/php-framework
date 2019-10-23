@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Utilities\Router;
+namespace Tests\Utilities\Routing;
 
 trait RoutesBare
 {

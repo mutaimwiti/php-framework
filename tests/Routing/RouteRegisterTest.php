@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Router;
+namespace Tests\Routing;
 
 use Tests\TestCase;
-use Framework\Router\Router;
+use Framework\Routing\Router;
 
 class RouteRegisterTest extends TestCase
 {

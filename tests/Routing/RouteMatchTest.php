@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Router;
+namespace Tests\Routing;
 
 use Tests\TestCase;
 use Framework\Request;
-use Framework\Router\Router;
-use Framework\Router\Exceptions\HTTPMethodException;
-use Framework\Router\Exceptions\RouteNotFoundException;
+use Framework\Routing\Router;
+use Framework\Routing\Exceptions\HTTPMethodException;
+use Framework\Routing\Exceptions\RouteNotFoundException;
 
 class RouteMatchTest extends TestCase {
     /** @test */

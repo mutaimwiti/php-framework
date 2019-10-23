@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Router;
+namespace Tests\Routing;
 
-use Framework\Router\Router;
+use Framework\Routing\Router;
 
 class RouteNamespaceTest {
     /** @test */

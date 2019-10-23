@@ -1,11 +1,11 @@
 <?php
 
-namespace Framework\Router;
+namespace Framework\Routing;
 
 use Closure;
 use Framework\Request;
-use Framework\Router\Exceptions\HTTPMethodException;
-use Framework\Router\Exceptions\RouteNotFoundException;
+use Framework\Routing\Exceptions\HTTPMethodException;
+use Framework\Routing\Exceptions\RouteNotFoundException;
 
 /**
  * Class Router

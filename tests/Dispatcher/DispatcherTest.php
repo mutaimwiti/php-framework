@@ -7,10 +7,10 @@ use Framework\Request;
 use Framework\Response;
 use Tests\TestCase;
 use Framework\Controller;
-use Framework\Router\Router;
+use Framework\Routing\Router;
 use Framework\Dispatcher\Dispatcher;
 use Framework\Dispatcher\ControllerDispatcher;
-use Framework\Router\Exceptions\RouteNotFoundException;
+use Framework\Routing\Exceptions\RouteNotFoundException;
 
 class DispatcherTest extends TestCase
 {

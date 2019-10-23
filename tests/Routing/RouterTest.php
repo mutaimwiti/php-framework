@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Router;
+namespace Tests\Routing;
 
 use Tests\TestCase;
-use Framework\Router\Router;
-use Tests\Utilities\Router\RoutesBare;
+use Framework\Routing\Router;
+use Tests\Utilities\Routing\RoutesBare;
 
 class RouterTest extends TestCase
 {
