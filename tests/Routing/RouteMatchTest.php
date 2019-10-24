@@ -12,7 +12,7 @@ use Framework\Routing\Exceptions\RouteNotFoundException;
 class RouteMatchTest extends TestCase
 {
     /** @test */
-    function it_returns_a_route_instance()
+    function it_returns_a_route_action_instance()
     {
         $router = new Router();
 
@@ -59,21 +59,35 @@ class RouteMatchTest extends TestCase
     }
 
     /** @test */
-    function it_matches_root_route_requests_correctly()
+    function it_matches_parameterized_route_requests_correctly()
     {
         $router = new Router();
 
-        $router->get('/', 'HomeController@index');
+        $router->get('users/{id}/meta/{prop}', 'UserController@meta');
 
-        $request = Request::create('/', 'GET');
+        $request = Request::create('users/723/meta/age', 'GET');
 
-        $expected = new RouteAction('HomeController@index');
+        $expected = new RouteAction('UserController@meta', ['723', 'age']);
 
         $this->assertEquals($expected, $router->match($request));
     }
 
     /** @test */
-    function it_throws_when_invalid_invalid_http_method_is_detected()
+    function it_matches_optional_parameterized_route_requests_correctly()
+    {
+        $router = new Router();
+
+        $router->get('reports/{year}/system/{id?}', 'ReportsController@system');
+
+        $request = Request::create('reports/2019/system', 'GET');
+
+        $expected = new RouteAction('ReportsController@system', ['2019', null]);
+
+        $this->assertEquals($expected, $router->match($request));
+    }
+
+    /** @test */
+    function it_throws_on_attempt_to_match_invalid_http_method()
     {
         $this->expectException(HTTPMethodException::class);
 

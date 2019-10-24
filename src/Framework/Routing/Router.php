@@ -208,13 +208,13 @@ class Router
         if (array_key_exists($method, $this->routes)) {
             $uri = $request->uri();
 
-            if (isset($this->routes[$method][$uri])) {
-                $route = new RouteAction($this->routes[$method][$uri]);
+            $routeMatcher = new RouteMatcher($this->routes[$method]);
+
+            if ($routeAction = $routeMatcher->match($uri)) {
+                return $routeAction;
             } else {
                 throw new RouteNotFoundException("Route $method $uri does not exist");
             }
-
-            return $route;
         }
 
         throw new HTTPMethodException("Method $method is not allowed");
