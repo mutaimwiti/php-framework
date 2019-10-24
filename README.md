@@ -1,2 +1,2 @@
-# Vanilla PHP
+# PHP Framework
 PHP, OOP, TDD
