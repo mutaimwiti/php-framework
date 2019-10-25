@@ -2,6 +2,8 @@
 
 namespace Framework\Routing;
 
+use Exception;
+
 class RouteMatcher
 {
     /**
@@ -22,24 +24,28 @@ class RouteMatcher
      */
     public function match($uri)
     {
-        $routes = $this->toRegex($this->routes);
+        try {
+            $routes = $this->toRegex($this->routes);
 
-        foreach ($routes as $route => $action) {
-            if (preg_match_all($route, $uri, $matches)) {
-                array_shift($matches); // remove full route match
-                $arguments = [];
+            foreach ($routes as $route => $action) {
+                if (preg_match_all($route, $uri, $matches)) {
+                    array_shift($matches); // remove full route match
+                    $arguments = [];
 
-                foreach ($matches as $match) {
-                    if (count($match)) {
-                        $arguments[] = $match[0] == "" ? null : $match[0];
+                    foreach ($matches as $match) {
+                        if (count($match)) {
+                            $arguments[] = $match[0] == "" ? null : $match[0];
+                        }
                     }
+
+                    return new RouteAction($action, $arguments);
                 }
-
-                return new RouteAction($action, $arguments);
             }
-        }
 
-        return false;
+            return false;
+        } catch (Exception $exception) {
+            return false;
+        }
     }
 
     protected function toRegex($routes)
@@ -48,7 +54,6 @@ class RouteMatcher
 
         foreach ($routes as $route => $action) {
             $regex = $route;
-
             foreach ($this->regexMappers as $mapper) {
                 $regex = preg_replace($mapper[0], $mapper[1], $regex);
             }
@@ -60,13 +65,13 @@ class RouteMatcher
     }
 
     protected $regexMappers = [
-        // replace {x with ([0-9a-zA-Z-]+)
-        ['@(\{[0-9a-zA-Z-]+)+@', '([0-9a-zA-Z-]+)'],
+        // replace {arg with ([0-9a-zA-Z-]+)
+        ['@(\{[a-zA-Z_]([0-9a-zA-Z-_]+)?)+@', '([0-9a-zA-Z-_~.]+)'],
         // remove }
         ['@\}+@', ''],
         // replace ?/ with ?/?
         ['@(\?/)+@', '?/?'],
         // make closing slash optional if it is followed by an optional argument
-        ['@/\(\[0-9a-zA-Z-\]\+\)\?@', '/?([0-9a-zA-Z-]+)?'],
+        ['@/\(\[0-9a-zA-Z-\_\~\.\]\+\)\?@', '/?([0-9a-zA-Z-_~.]+)?'],
     ];
 }
