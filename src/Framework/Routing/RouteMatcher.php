@@ -65,13 +65,13 @@ class RouteMatcher
     }
 
     protected $regexMappers = [
-        // replace {arg with ([0-9a-zA-Z-]+)
+        // make slash before optional argument optional
+        ['@/{(.*?)}@', '/?{$1}'],
+        // replace parameter and its opening delimiter with argument matcher
         ['@(\{[a-zA-Z_]([0-9a-zA-Z-_]+)?)+@', '([0-9a-zA-Z-_~.]+)'],
-        // remove }
+        // remove parameter closing delimiter
         ['@\}+@', ''],
-        // replace ?/ with ?/?
+        // make slash after optional argument optional
         ['@(\?/)+@', '?/?'],
-        // make closing slash optional if it is followed by an optional argument
-        ['@/\(\[0-9a-zA-Z-\_\~\.\]\+\)\?@', '/?([0-9a-zA-Z-_~.]+)?'],
     ];
 }
