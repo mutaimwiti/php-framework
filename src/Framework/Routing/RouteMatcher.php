@@ -32,6 +32,11 @@ class RouteMatcher
                     array_shift($matches); // remove full route match
                     $arguments = [];
 
+                    $matches = array_intersect_key(
+                        $matches,
+                        array_flip(array_filter(array_keys($matches), 'is_string'))
+                    );
+
                     foreach ($matches as $match) {
                         if (count($match)) {
                             $arguments[] = $match[0];
@@ -69,7 +74,7 @@ class RouteMatcher
         // make slash before optional argument optional
         ['@/{(.*?)}@', '/?{$1}'],
         // replace parameter and its delimiters with argument matcher
-        ['@(\{[a-zA-Z_]([0-9a-zA-Z-_]+)?)+(\??)\}@', '([0-9a-zA-Z-_~.]+)$3'],
+        ['@(\{)([a-zA-Z_]([0-9a-zA-Z-_]+)?)(\??)\}@', '(?<$2>[0-9a-zA-Z-_~.]+)$4'],
         // make slash after optional argument optional
         ['@(\?/)+@', '?/?'],
     ];
