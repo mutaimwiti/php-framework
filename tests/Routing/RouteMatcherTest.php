@@ -17,6 +17,13 @@ class RouteMatcherTest extends TestCase
         'bar/{id?}/{name?}' => 'BarController@doSomething',
         'foo/{id}/bar/{name?}' => 'FooController@doSomething',
         'baz/{id}/{name?}/{col?}/' => 'BazController@doSomething',
+        // potentially crashing routes
+        // case 1
+        'stats/foo' => 'StatsController@doX',
+        'stats/{prop}' => 'StatsController@doY',
+        // case 2
+        'articles/{id}' => 'ArticleController@show',
+        'articles/meta' => 'ArticleController@meta',
     ];
 
     /** @var RouteMatcher */
@@ -102,5 +109,26 @@ class RouteMatcherTest extends TestCase
         $expected = new RouteAction('HomeController@index');
 
         $this->assertEquals($expected, $this->routeMatcher->match('/'));
+    }
+
+    /** @test */
+    function order_of_route_def_is_respected_when_simple_routes_crash_with_parameterized_routes() {
+        // case 1
+        // route => stats/foo
+        $expected = new RouteAction('StatsController@doX');
+        $this->assertEquals($expected, $this->routeMatcher->match('stats/foo'));
+
+        // route => stats/{prop}
+        $expected = new RouteAction('StatsController@doY', ['speed']);
+        $this->assertEquals($expected, $this->routeMatcher->match('stats/speed'));
+
+        // case 2
+        // route => articles/{id}
+        $expected = new RouteAction('ArticleController@show', ['7']);
+        $this->assertEquals($expected, $this->routeMatcher->match('articles/7'));
+
+        // route => articles/meta - will match articles/{id} instead
+        $expected = new RouteAction('ArticleController@show', ['meta']);
+        $this->assertEquals($expected, $this->routeMatcher->match('articles/meta'));
     }
 }

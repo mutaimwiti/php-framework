@@ -22,26 +22,9 @@ class RouteMatcher
      */
     public function match($uri)
     {
-        $action = $this->simpleMatch($uri);
-
-        return $action ? $action : $this->regexMatch($uri);
-    }
-
-    protected function simpleMatch($uri)
-    {
-        if (isset($this->routes[$uri])) {
-            return new RouteAction($this->routes[$uri]);
-        }
-
-        return false;
-    }
-
-    protected function regexMatch($uri)
-    {
         $routes = $this->toRegex($this->routes);
 
         foreach ($routes as $route => $action) {
-
             if (preg_match_all($route, $uri, $matches)) {
                 array_shift($matches); // remove full route match
                 $arguments = [];
@@ -59,17 +42,6 @@ class RouteMatcher
         return false;
     }
 
-    protected $regexMappers = [
-        // replace {x with ([0-9a-zA-Z-]+)
-        ['@(\{[0-9a-zA-Z-]+)+@', '([0-9a-zA-Z-]+)'],
-        // remove }
-        ['@\}+@', ''],
-        // replace ?/ with ?/?
-        ['@(\?/)+@', '?/?'],
-        // make closing slash optional if it is followed by an optional argument
-        ['@/\(\[0-9a-zA-Z-\]\+\)\?@', '/?([0-9a-zA-Z-]+)?'],
-    ];
-
     protected function toRegex($routes)
     {
         $regexRoutes = [];
@@ -86,4 +58,15 @@ class RouteMatcher
 
         return $regexRoutes;
     }
+
+    protected $regexMappers = [
+        // replace {x with ([0-9a-zA-Z-]+)
+        ['@(\{[0-9a-zA-Z-]+)+@', '([0-9a-zA-Z-]+)'],
+        // remove }
+        ['@\}+@', ''],
+        // replace ?/ with ?/?
+        ['@(\?/)+@', '?/?'],
+        // make closing slash optional if it is followed by an optional argument
+        ['@/\(\[0-9a-zA-Z-\]\+\)\?@', '/?([0-9a-zA-Z-]+)?'],
+    ];
 }
