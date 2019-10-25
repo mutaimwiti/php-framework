@@ -28,13 +28,13 @@ class RouteMatcher
             $routes = $this->toRegex($this->routes);
 
             foreach ($routes as $route => $action) {
-                if (preg_match_all($route, $uri, $matches)) {
+                if (preg_match_all($route, $uri, $matches, PREG_UNMATCHED_AS_NULL)) {
                     array_shift($matches); // remove full route match
                     $arguments = [];
 
                     foreach ($matches as $match) {
                         if (count($match)) {
-                            $arguments[] = $match[0] == "" ? null : $match[0];
+                            $arguments[] = $match[0];
                         }
                     }
 
