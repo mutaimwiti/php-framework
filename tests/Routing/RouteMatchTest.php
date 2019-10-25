@@ -67,7 +67,7 @@ class RouteMatchTest extends TestCase
 
         $request = Request::create('users/723/meta/age', 'GET');
 
-        $expected = new RouteAction('UserController@meta', ['723', 'age']);
+        $expected = new RouteAction('UserController@meta', ['id' => '723', 'prop' => 'age']);
 
         $this->assertEquals($expected, $router->match($request));
     }
@@ -81,7 +81,7 @@ class RouteMatchTest extends TestCase
 
         $request = Request::create('reports/2019/system', 'GET');
 
-        $expected = new RouteAction('ReportsController@system', ['2019', null]);
+        $expected = new RouteAction('ReportsController@system', ['year' => '2019', 'id' => null]);
 
         $this->assertEquals($expected, $router->match($request));
     }

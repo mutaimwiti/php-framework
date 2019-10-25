@@ -34,7 +34,7 @@ class RouteMatcherTest extends TestCase
 
         $routeMatcher = new RouteMatcher($routes);
 
-        $expected = new RouteAction('Action', ['23', '85']);
+        $expected = new RouteAction('Action', ['id' => '23', 'name' => '85']);
 
         $this->assertEquals($expected, $routeMatcher->match('bar/23/85'));
     }
@@ -58,7 +58,7 @@ class RouteMatcherTest extends TestCase
 
         $routeMatcher = new RouteMatcher($routes);
 
-        $expected = new RouteAction('Action', [null, null]);
+        $expected = new RouteAction('Action', ['id' => null, 'name' => null]);
 
         $this->assertEquals($expected, $routeMatcher->match('bar'));
     }
@@ -76,13 +76,13 @@ class RouteMatcherTest extends TestCase
 
         $routeMatcher = new RouteMatcher($routes);
 
-        $expected = new RouteAction('BarController@doSomething', [null, null]);
+        $expected = new RouteAction('BarController@doSomething', ['id' => null, 'name' => null]);
         $this->assertEquals($expected, $routeMatcher->match('bar'));
 
-        $expected = new RouteAction('FooController@doSomething', [5, null]);
+        $expected = new RouteAction('FooController@doSomething', ['id' => 5, 'name' => null]);
         $this->assertEquals($expected, $routeMatcher->match('foo/5/bar'));
 
-        $expected = new RouteAction('BazController@doSomething', [55, null, null]);
+        $expected = new RouteAction('BazController@doSomething', ['id' => 55, 'name' => null, 'col' => null]);
         $this->assertEquals($expected, $routeMatcher->match('baz/55'));
     }
 
@@ -93,7 +93,7 @@ class RouteMatcherTest extends TestCase
 
         $routeMatcher = new RouteMatcher($routes);
 
-        $expected = new RouteAction('Action', ['44', null]);
+        $expected = new RouteAction('Action', ['id' => '44', 'name' => null]);
 
         $this->assertEquals($expected, $routeMatcher->match('baz/44'));
         $this->assertEquals($expected, $routeMatcher->match('baz/44/'));
@@ -131,16 +131,16 @@ class RouteMatcherTest extends TestCase
         $this->assertEquals($expected, $routeMatcher->match('stats/foo'));
 
         // route => stats/{prop}
-        $expected = new RouteAction('StatsController@doY', ['speed']);
+        $expected = new RouteAction('StatsController@doY', ['prop' => 'speed']);
         $this->assertEquals($expected, $routeMatcher->match('stats/speed'));
 
         // case 2
         // route => articles/{id}
-        $expected = new RouteAction('ArticleController@show', ['7']);
+        $expected = new RouteAction('ArticleController@show', ['id' => '7']);
         $this->assertEquals($expected, $routeMatcher->match('articles/7'));
 
         // route => articles/meta - will match articles/{id} instead
-        $expected = new RouteAction('ArticleController@show', ['meta']);
+        $expected = new RouteAction('ArticleController@show', ['id' => 'meta']);
         $this->assertEquals($expected, $routeMatcher->match('articles/meta'));
     }
 
@@ -151,7 +151,7 @@ class RouteMatcherTest extends TestCase
 
         $routeMatcher = new RouteMatcher($routes);
 
-        $expected = new RouteAction('Action', ['something']);
+        $expected = new RouteAction('Action', ['bar_baz_1' => 'something']);
         $this->assertEquals($expected, $routeMatcher->match('foo/something'));
     }
 
@@ -191,10 +191,10 @@ class RouteMatcherTest extends TestCase
 
         $routeMatcher = new RouteMatcher($routes);
 
-        $expected = new RouteAction('ActionX', ['something']);
+        $expected = new RouteAction('ActionX', ['_' => 'something']);
         $this->assertEquals($expected, $routeMatcher->match('foo/something'));
 
-        $expected = new RouteAction('ActionY', ['something']);
+        $expected = new RouteAction('ActionY', ['__' => 'something']);
         $this->assertEquals($expected, $routeMatcher->match('bar/something'));
     }
 
@@ -214,7 +214,7 @@ class RouteMatcherTest extends TestCase
         $allowedChars = array_merge($letters, $digits, ['-', '.', '_', '~']);
 
         foreach ($allowedChars as $char) {
-            $expected = new RouteAction('Action', [$char]);
+            $expected = new RouteAction('Action', ['id' => $char]);
             $this->assertEquals($expected, $routeMatcher->match("foo/${char}"));
         }
     }

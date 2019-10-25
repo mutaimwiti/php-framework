@@ -37,9 +37,9 @@ class RouteMatcher
                         array_flip(array_filter(array_keys($matches), 'is_string'))
                     );
 
-                    foreach ($matches as $match) {
+                    foreach ($matches as $key => $match) {
                         if (count($match)) {
-                            $arguments[] = $match[0];
+                            $arguments[$key] = $match[0];
                         }
                     }
 
