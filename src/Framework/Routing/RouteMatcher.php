@@ -54,6 +54,7 @@ class RouteMatcher
 
         foreach ($routes as $route => $action) {
             $regex = $route;
+
             foreach ($this->regexMappers as $mapper) {
                 $regex = preg_replace($mapper[0], $mapper[1], $regex);
             }
@@ -67,10 +68,8 @@ class RouteMatcher
     protected $regexMappers = [
         // make slash before optional argument optional
         ['@/{(.*?)}@', '/?{$1}'],
-        // replace parameter and its opening delimiter with argument matcher
-        ['@(\{[a-zA-Z_]([0-9a-zA-Z-_]+)?)+@', '([0-9a-zA-Z-_~.]+)'],
-        // remove parameter closing delimiter
-        ['@\}+@', ''],
+        // replace parameter and its delimiters with argument matcher
+        ['@(\{[a-zA-Z_]([0-9a-zA-Z-_]+)?)+(\??)\}@', '([0-9a-zA-Z-_~.]+)$3'],
         // make slash after optional argument optional
         ['@(\?/)+@', '?/?'],
     ];
