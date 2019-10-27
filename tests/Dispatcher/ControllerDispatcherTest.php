@@ -29,11 +29,13 @@ class ControllerDispatcherTest extends TestCase
     {
         $controllerMock = Mockery::mock(FooController::class);
 
+        $arguments = ['foo' => 'bar'];
+
         $controllerMock->shouldReceive('callAction')
-            ->with('index', $this->requestMock)
+            ->with('index', $this->requestMock, $arguments)
             ->once();
 
-        $this->dispatcher->dispatch($this->requestMock, $controllerMock, 'index');
+        $this->dispatcher->dispatch($this->requestMock, $controllerMock, 'index', $arguments);
     }
 
     /** @test */
@@ -47,13 +49,13 @@ class ControllerDispatcherTest extends TestCase
     /** @test */
     public function it_returns_the_response_from_controller()
     {
-        $data = ['status' => 'success', 'foo' => 'bar'];
+        $requestData = ['status' => 'success', 'foo' => 'bar'];
 
         $this->requestMock->shouldReceive('all')
-            ->andReturn($data);
+            ->andReturn($requestData);
 
         $response = $this->dispatcher->dispatch($this->requestMock, $this->fooController, 'index');
 
-        $this->assertEquals($data, $response->content);
+        $this->assertEquals($requestData, $response->content);
     }
 }

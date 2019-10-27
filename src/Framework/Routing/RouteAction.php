@@ -6,7 +6,7 @@ namespace Framework\Routing;
  * Class Route
  * @package Framework\Routing
  * @property-read string $handler
- * @property-read string $arguments
+ * @property-read array $arguments
  */
 class RouteAction
 {

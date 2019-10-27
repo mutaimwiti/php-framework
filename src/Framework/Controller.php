@@ -4,8 +4,8 @@ namespace Framework;
 
 abstract class Controller
 {
-    public function callAction($method, $request)
+    public function callAction($method, $request, $arguments = [])
     {
-        return call_user_func([$this, $method], $request);
+        return call_user_func([$this, $method], $request, $arguments);
     }
 }

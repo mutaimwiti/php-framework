@@ -6,17 +6,20 @@ use Framework\Request;
 use Framework\Controller;
 use Framework\Dispatcher\Exceptions\ControllerActionNotFoundException;
 
-class ControllerDispatcher {
+class ControllerDispatcher
+{
     /**
-     * @param Controller $controller
-     * @param $method
      * @param Request $request
+     * @param Controller $controller
+     * @param string $method
+     * @param array $arguments
      * @return mixed
      * @throws ControllerActionNotFoundException
      */
-    public function dispatch(Request $request, Controller $controller, $method) {
+    public function dispatch(Request $request, Controller $controller, $method, $arguments = [])
+    {
         if (method_exists($controller, $method)) {
-            return $controller->callAction($method, $request);
+            return $controller->callAction($method, $request, $arguments);
         } else {
             $class = get_class($controller);
             throw new ControllerActionNotFoundException(
