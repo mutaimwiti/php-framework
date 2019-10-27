@@ -100,6 +100,20 @@ class RouteMatcherTest extends TestCase
     }
 
     /** @test */
+    function it_passes_through_arguments_in_the_correct_order()
+    {
+        $routes = ['foo/{arg1}/bar/{arg2}/baz/{arg3}' => 'Action'];
+
+        $routeMatcher = new RouteMatcher($routes);
+
+        $expected = [0 => 'value_y', 1 => 'value_x', 2 => 'value_z'];
+
+        $actual = array_values($routeMatcher->match('foo/value_y/bar/value_x/baz/value_z')->arguments);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /** @test */
     function it_matches_root_route_requests_correctly()
     {
         $routes = ['/' => 'Action'];
