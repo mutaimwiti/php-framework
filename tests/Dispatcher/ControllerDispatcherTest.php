@@ -43,7 +43,7 @@ class ControllerDispatcherTest extends TestCase
     {
         $this->expectException(ControllerActionNotFoundException::class);
 
-        $this->dispatcher->dispatch($this->requestMock, $this->fooController, 'store');
+        $this->dispatcher->dispatch($this->requestMock, $this->fooController, 'destroy');
     }
 
     /** @test */
@@ -57,5 +57,17 @@ class ControllerDispatcherTest extends TestCase
         $response = $this->dispatcher->dispatch($this->requestMock, $this->fooController, 'index');
 
         $this->assertEquals($requestData, $response->content);
+    }
+
+    /** @test */
+    public function it_avails_route_arguments_to_controller_method_and_in_correct_order()
+    {
+        $routeArguments = ['var1' => 'foo', 'var2' => 'bar', 'var3' => 'baz'];
+
+        $response = $this->dispatcher->dispatch($this->requestMock, $this->fooController, 'store', $routeArguments);
+
+        $expected = [0 => 'foo', 1 => 'bar', 2 => 'baz'];
+
+        $this->assertEquals($expected, $response->content);
     }
 }
