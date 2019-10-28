@@ -10,6 +10,10 @@ class FooController extends Controller {
         return response($request->all());
     }
 
+    public function show() {
+        return [];
+    }
+
     public function store(Request $request, $var1, $var2, $var3) {
         return response([$var1, $var2, $var3]);
     }

@@ -11,8 +11,8 @@ use Framework\Dispatcher\Exceptions\ControllerActionNotFoundException;
 
 class ControllerDispatcherTest extends TestCase
 {
+    protected $request;
     protected $dispatcher;
-    protected $requestMock;
     protected $fooController;
 
     protected function setUp()
@@ -21,7 +21,7 @@ class ControllerDispatcherTest extends TestCase
 
         $this->fooController = new FooController();
         $this->dispatcher = new ControllerDispatcher();
-        $this->requestMock = Mockery::mock(Request::class);
+        $this->request = Mockery::mock(Request::class);
     }
 
     /** @test */
@@ -32,10 +32,10 @@ class ControllerDispatcherTest extends TestCase
         $arguments = ['foo' => 'bar'];
 
         $controllerMock->shouldReceive('callAction')
-            ->with('index', $this->requestMock, $arguments)
+            ->with('index', $this->request, $arguments)
             ->once();
 
-        $this->dispatcher->dispatch($this->requestMock, $controllerMock, 'index', $arguments);
+        $this->dispatcher->dispatch($this->request, $controllerMock, 'index', $arguments);
     }
 
     /** @test */
@@ -43,7 +43,7 @@ class ControllerDispatcherTest extends TestCase
     {
         $this->expectException(ControllerActionNotFoundException::class);
 
-        $this->dispatcher->dispatch($this->requestMock, $this->fooController, 'destroy');
+        $this->dispatcher->dispatch($this->request, $this->fooController, 'destroy');
     }
 
     /** @test */
@@ -51,10 +51,9 @@ class ControllerDispatcherTest extends TestCase
     {
         $requestData = ['status' => 'success', 'foo' => 'bar'];
 
-        $this->requestMock->shouldReceive('all')
-            ->andReturn($requestData);
+        $request = Request::create('reports', 'GET', $requestData);
 
-        $response = $this->dispatcher->dispatch($this->requestMock, $this->fooController, 'index');
+        $response = $this->dispatcher->dispatch($request, $this->fooController, 'index');
 
         $this->assertEquals($requestData, $response->content);
     }
@@ -64,7 +63,7 @@ class ControllerDispatcherTest extends TestCase
     {
         $routeArguments = ['var1' => 'foo', 'var2' => 'bar', 'var3' => 'baz'];
 
-        $response = $this->dispatcher->dispatch($this->requestMock, $this->fooController, 'store', $routeArguments);
+        $response = $this->dispatcher->dispatch($this->request, $this->fooController, 'store', $routeArguments);
 
         $expected = [0 => 'foo', 1 => 'bar', 2 => 'baz'];
 
