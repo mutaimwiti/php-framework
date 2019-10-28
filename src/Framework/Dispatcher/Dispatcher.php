@@ -40,6 +40,8 @@ class Dispatcher
         try {
             $routeAction = $this->router->match($request);
 
+            $request->setRouteArguments($routeAction->arguments);
+
             $handler = $routeAction->handler;
 
             if ($handler instanceof Closure) {

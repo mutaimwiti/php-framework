@@ -13,4 +13,8 @@ class FooController extends Controller {
     public function store(Request $request, $var1, $var2, $var3) {
         return response([$var1, $var2, $var3]);
     }
+
+    public function search(Request $request) {
+        return [$request->route('foo'), $request->route('bar')];
+    }
 }
