@@ -148,7 +148,7 @@ class DispatcherTest extends TestCase
     }
 
     /** @test */
-    public function it_avails_route_arguments_to_closure_and_in_correct_order()
+    public function it_passes_route_arguments_to_closure_and_in_correct_order()
     {
         $routerMock = $this->createRouterMock();
 
