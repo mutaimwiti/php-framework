@@ -11,6 +11,8 @@ class Request
     protected $data = [];
     protected $query = [];
 
+    protected $routeArguments = [];
+
     protected static $inputStream = 'php://input';
 
     /**
@@ -168,5 +170,15 @@ class Request
             parse_url($this->server['REQUEST_URI'], PHP_URL_PATH),
             '/'
         );
+    }
+
+    public function setRouteArguments(array $arguments)
+    {
+        $this->routeArguments = $arguments;
+    }
+
+    public function route($param, $default = null)
+    {
+        return isset($this->routeArguments[$param]) ? $this->routeArguments[$param] : $default;
     }
 }

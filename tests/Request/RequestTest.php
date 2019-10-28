@@ -187,4 +187,24 @@ class RequestTest extends TestCase
         $this->assertEquals($constructedRequest->all(), $capturedRequest->all());
         $this->assertEquals($constructedRequest->method(), $capturedRequest->method());
     }
+
+    /** @test */
+    function it_allows_setting_and_retrieval_of_route_parameters()
+    {
+        $request = Request::create();
+
+        $request->setRouteArguments(['x' => 'reports', 'y' => 'system']);
+
+        $this->assertEquals('reports', $request->route('x'));
+        $this->assertEquals('system', $request->route('y'));
+    }
+
+    /** @test */
+    function it_returns_default_value_when_route_parameter_does_not_exist()
+    {
+        $request = Request::create();
+
+        $this->assertEquals(null, $request->route('x'));
+        $this->assertEquals('placeholder', $request->route('y', 'placeholder'));
+    }
 }
