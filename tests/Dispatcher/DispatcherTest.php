@@ -146,4 +146,32 @@ class DispatcherTest extends TestCase
         $this->assertEquals([], $response->content);
         $this->assertInstanceOf(Response::class, $response);
     }
+
+    /** @test */
+    public function it_avails_route_arguments_to_closure_and_in_correct_order()
+    {
+        $routerMock = $this->createRouterMock();
+
+        $closure = function (Request $request, $var1, $var2, $var3) {
+            return [$var1, $var2, $var3];
+        };
+
+        $routeArguments = ['var1' => 'foo', 'var2' => 'bar', 'var3' => 'baz'];
+
+        $routeActionMock = Mockery::mock(RouteAction::class, [
+            $closure,
+            $routeArguments
+        ]);
+
+        $routerMock->shouldReceive('match')
+            ->andReturn($routeActionMock);
+
+        $dispatcher = new Dispatcher($routerMock, $this->createControllerDispatcherMock());
+
+        $response = $dispatcher->handle(Request::create());
+
+        $expected = [0 => 'foo', 1 => 'bar', 2 => 'baz'];
+
+        $this->assertEquals($expected, $response->content);
+    }
 }

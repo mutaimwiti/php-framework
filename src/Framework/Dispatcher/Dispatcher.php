@@ -63,7 +63,7 @@ class Dispatcher
      */
     protected function dispatchClosureAction(Request $request, RouteAction $routeAction)
     {
-        return call_user_func($routeAction->handler, $request, ...$routeAction->arguments);
+        return call_user_func($routeAction->handler, $request, ...array_values($routeAction->arguments));
     }
 
     /**
